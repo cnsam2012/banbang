@@ -201,4 +201,12 @@ public class DiscussPostService {
         return discussPostMapper.updateScore(id, score);
     }
 
+    /**
+     * 删除帖子
+     * @param id
+     * @return
+     */
+    public int deleteDiscussPost(int id) {
+        return discussPostMapper.deleteById(id);
+    }
 }

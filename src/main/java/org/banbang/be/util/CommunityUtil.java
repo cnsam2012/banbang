@@ -1,15 +1,20 @@
 package org.banbang.be.util;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.RandomUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 import org.springframework.util.DigestUtils;
 
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
+@Slf4j
 public class CommunityUtil {
 
     /**
@@ -87,14 +92,16 @@ public class CommunityUtil {
 
     /**
      * 测试
-     * @param args
      */
-    public static void main(String[] args) {
+    @Test
+    public void testCommunityUtil() {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Jack");
         map.put("age", 18);
         // {"msg":"ok","code":0,"name":"Jack","age":18}
-        System.out.println(getJSONString(0, "ok", map));
+        log.info(getJSONString(0, "ok", map));
+        log.info(CommunityUtil.generateUUID());
+        Assertions.assertEquals(1,1);
     }
 
 }

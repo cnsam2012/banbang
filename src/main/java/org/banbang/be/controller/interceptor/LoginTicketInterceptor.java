@@ -1,5 +1,6 @@
 package org.banbang.be.controller.interceptor;
 
+import org.apache.commons.lang3.StringUtils;
 import org.banbang.be.pojo.LoginTicket;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.UserService;
@@ -30,6 +31,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     /**
      * 在 Controller 执行之前被调用
      * 检查凭证状态，若凭证有效则在本次请求中持有该用户信息
+     *
      * @param request
      * @param response
      * @param handler
@@ -40,6 +42,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
         // 从 cookie 中获取凭证
         String ticket = CookieUtil.getValue(request, "ticket");
+
         if (ticket != null) {
             // 查询凭证
             LoginTicket loginTicket = userService.findLoginTicket(ticket);
@@ -49,7 +52,6 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
                 User user = userService.findUserById(loginTicket.getUserId());
                 // 在本次请求中持有用户信息
                 hostHolder.setUser(user);
-
                 // 构建用户认证的结果，并存入 SecurityContext, 以便于 Spring Security 进行授权
                 Authentication authentication = new UsernamePasswordAuthenticationToken(
                         user, user.getPassword(), userService.getAuthorities(user.getId())
@@ -64,6 +66,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     /**
      * 在模板引擎之前被调用
      * 将用户信息存入 modelAndView, 便于模板引擎调用
+     *
      * @param request
      * @param response
      * @param handler
@@ -81,6 +84,7 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
     /**
      * 在 Controller 执行之后（即服务端对本次请求做出响应后）被调用
      * 清理本次请求持有的用户信息
+     *
      * @param request
      * @param response
      * @param handler
@@ -92,4 +96,6 @@ public class LoginTicketInterceptor implements HandlerInterceptor {
         hostHolder.clear();
         SecurityContextHolder.clearContext();
     }
+
+
 }

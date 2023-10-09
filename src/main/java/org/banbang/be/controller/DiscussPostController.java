@@ -117,6 +117,7 @@ public class DiscussPostController implements CommunityConstant {
     @ResponseBody
     public String addDiscussPost(@NotEmpty(message = "文章标题不能为空") String title, String content) {
         User user = hostHolder.getUser();
+
         if (user == null) {
             return CommunityUtil.getJSONString(403, "您还未登录");
         }
@@ -229,6 +230,7 @@ public class DiscussPostController implements CommunityConstant {
     }
 
     /**
+     * TODO: 未完成置顶帖子
      * 置顶帖子
      * @param id
      * @return
@@ -251,6 +253,7 @@ public class DiscussPostController implements CommunityConstant {
 
 
     /**
+     * TODO: 未完成加精帖子
      * 加精帖子
      * @param id
      * @return
@@ -277,6 +280,7 @@ public class DiscussPostController implements CommunityConstant {
 
 
     /**
+     * TODO: 未完成删除帖子
      * 删除帖子
      * @param id
      * @return
@@ -284,7 +288,9 @@ public class DiscussPostController implements CommunityConstant {
     @PostMapping("/delete")
     @ResponseBody
     public String setDelete(int id) {
+
         discussPostService.updateStatus(id, 2);
+        discussPostService.deleteDiscussPost(id);
 
         // 触发删帖事件，通过消息队列更新 Elasticsearch 服务器
         Event event = new Event()

@@ -1,11 +1,13 @@
 package org.banbang.be;
 
+import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import javax.annotation.PostConstruct;
 
 @SpringBootApplication
+@MapperScan("org.banbang.be.dao")
 public class BbbeApplication {
 
     @PostConstruct

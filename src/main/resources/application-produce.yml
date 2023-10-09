@@ -1,0 +1,73 @@
+caffeine:
+  posts:
+    expire-seconds: 180
+    max-size: 15
+community:
+  path:
+    domain: http://banbang.ren
+mybatis:
+  configuration:
+    mapUnderscoreToCamelCase: true
+    useGeneratedKeys: true
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: org.banbang.be.pojo
+qiniu:
+  bucket:
+    header:
+      name: banbang
+      url: http://s0mebygzu.hn-bkt.clouddn.com
+  key:
+    access: u5skkgjubSV1jFUJDCxcD56aLPbxFt0x5Nt9gFHl
+    secret: zwzJu9Adr0ggvLi8ad_6D1mLi_x-JRPuV2PbBubV
+server:
+  port: 8080
+  servlet:
+    context-path: /b8
+spring:
+  data:
+    elasticsearch:
+      cluster-name: community
+      cluster-nodes: 127.0.0.1:9300
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    password: Banbang.ren87654321
+    url: jdbc:mysql://127.0.0.1:3306/greatecommunity?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong&allowPublicKeyRetrieval=true
+    username: testuser
+  kafka:
+    bootstrap-servers: localhost:9092
+    consumer:
+      auto-commit-interval: 3000
+      enable-auto-commit: true
+      group-id: test-consumer-group
+  mail:
+    host: smtp.gmail.com
+    password: ydwgloykpmpuaahx
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    protocol: smtps
+    username: 8anbang@gmail.com
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+          scheduler:
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+    scheduler-name: communityScheduler
+  redis:
+    database: 11
+    host: localhost
+    port: 6379
+  thymeleaf:
+    cache: true

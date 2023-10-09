@@ -1,5 +1,6 @@
 package org.banbang.be.dao;
 
+import com.baomidou.mybatisplus.core.mapper.BaseMapper;
 import org.banbang.be.pojo.DiscussPost;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
@@ -7,7 +8,7 @@ import org.apache.ibatis.annotations.Param;
 import java.util.List;
 
 @Mapper
-public interface DiscussPostMapper {
+public interface DiscussPostMapper extends BaseMapper<DiscussPost> {
 
     /**
      * 分页查询讨论帖信息

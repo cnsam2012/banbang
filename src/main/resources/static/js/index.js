@@ -4,6 +4,7 @@ $(function(){
 
 function publish() {
 	$("#publishModal").modal("hide");
+
 	// 获取标题和内容
 	var title = $("#recipient-name").val();
 	var content = $("#message-text").val();

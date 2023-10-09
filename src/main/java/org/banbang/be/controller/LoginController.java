@@ -1,14 +1,15 @@
 package org.banbang.be.controller;
 
 import com.google.code.kaptcha.Producer;
+import lombok.extern.slf4j.Slf4j;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.UserService;
 import org.banbang.be.util.CommunityConstant;
 import org.banbang.be.util.CommunityUtil;
 import org.banbang.be.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+//import org.slf4j.Logger;
+//import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -16,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.Cookie;
@@ -30,9 +32,10 @@ import java.util.concurrent.TimeUnit;
  * 登录、登出、注册
  */
 @Controller
+@Slf4j
 public class LoginController implements CommunityConstant {
 
-    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
+//    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
     @Autowired
     private UserService userService;
@@ -48,6 +51,7 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 进入注册界面
+     *
      * @return
      */
     @GetMapping("/register")
@@ -57,6 +61,7 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 进入登录界面
+     *
      * @return
      */
     @GetMapping("/login")
@@ -74,6 +79,7 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 注册用户
+     *
      * @param model
      * @param user
      * @return
@@ -95,11 +101,11 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 激活用户
+     *
      * @param model
      * @param userId
-     * @param code 激活码
-     * @return
-     * http://localhost:8080/echo/activation/用户id/激活码
+     * @param code   激活码
+     * @return http://localhost:8080/echo/activation/用户id/激活码
      */
     @GetMapping("/activation/{userId}/{code}")
     public String activation(Model model, @PathVariable("userId") int userId,
@@ -108,12 +114,10 @@ public class LoginController implements CommunityConstant {
         if (result == ACTIVATION_SUCCESS) {
             model.addAttribute("msg", "激活成功, 您的账号已经可以正常使用!");
             model.addAttribute("target", "/login");
-        }
-        else if (result == ACTIVATION_REPEAT) {
+        } else if (result == ACTIVATION_REPEAT) {
             model.addAttribute("msg", "无效的操作, 您的账号已被激活过!");
             model.addAttribute("target", "/index");
-        }
-        else {
+        } else {
             model.addAttribute("msg", "激活失败, 您提供的激活码不正确!");
             model.addAttribute("target", "/index");
         }
@@ -123,15 +127,17 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 生成验证码, 并存入 Redis
+     *
      * @param response
      */
     @GetMapping("/kaptcha")
     public void getKaptcha(HttpServletResponse response) {
         // 生成验证码
         String text = kaptchaProducer.createText(); // 生成随机字符
-        System.out.println("验证码：" + text);
+//        System.out.println("验证码：" + text);
+        log.info("验证码：" + text);
         BufferedImage image = kaptchaProducer.createImage(text); // 生成图片
-        
+
         // 验证码的归属者
         String kaptchaOwner = CommunityUtil.generateUUID();
         Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
@@ -149,7 +155,8 @@ public class LoginController implements CommunityConstant {
             ServletOutputStream os = response.getOutputStream();
             ImageIO.write(image, "png", os);
         } catch (IOException e) {
-            logger.error("响应验证码失败", e.getMessage());
+//            logger.error("响应验证码失败", e.getMessage());
+            log.error("响应验证码失败", e.getMessage());
         }
     }
 
@@ -157,7 +164,7 @@ public class LoginController implements CommunityConstant {
      * 验证用户输入的图片验证码是否和redis中存入的是否相等
      *
      * @param kaptchaOwner 从 cookie 中取出的 kaptchaOwner
-     * @param checkCode 用户输入的图片验证码
+     * @param checkCode    用户输入的图片验证码
      * @return 失败则返回原因, 验证成功返回 "",
      */
     private String checkKaptchaCode(String kaptchaOwner, String checkCode) {
@@ -176,10 +183,11 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 用户登录
-     * @param username 用户名
-     * @param password 密码
-     * @param code 验证码
-     * @param rememberMe 是否记住我（点击记住我后，凭证的有效期延长）
+     *
+     * @param username     用户名
+     * @param password     密码
+     * @param code         验证码
+     * @param rememberMe   是否记住我（点击记住我后，凭证的有效期延长）
      * @param model
      * @param kaptchaOwner 从 cookie 中取出的 kaptchaOwner
      * @param response
@@ -215,8 +223,7 @@ public class LoginController implements CommunityConstant {
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
             return "redirect:/index";
-        }
-        else {
+        } else {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             return "/site/login";
@@ -226,6 +233,7 @@ public class LoginController implements CommunityConstant {
 
     /**
      * 用户登出
+     *
      * @param ticket 设置凭证状态为无效
      * @return
      */
@@ -242,11 +250,11 @@ public class LoginController implements CommunityConstant {
     @PostMapping("/resetPwd")
     @ResponseBody
     public Map<String, Object> resetPwd(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        @RequestParam("emailVerifyCode") String emailVerifyCode,
-                        @RequestParam("kaptchaCode") String kaptcha,
-                        Model model,
-                        @CookieValue("kaptchaOwner") String kaptchaOwner) {
+                                        @RequestParam("password") String password,
+                                        @RequestParam("emailVerifyCode") String emailVerifyCode,
+                                        @RequestParam("kaptchaCode") String kaptcha,
+                                        Model model,
+                                        @CookieValue("kaptchaOwner") String kaptchaOwner) {
         Map<String, Object> map = new HashMap<>(4);
         // 检查图片验证码
         String kaptchaCheckRst = checkKaptchaCode(kaptchaOwner, kaptcha);
@@ -275,14 +283,14 @@ public class LoginController implements CommunityConstant {
      * 发送邮件验证码(用于重置密码)
      *
      * @param kaptchaOwner 从 cookie 中取出的 kaptchaOwner
-     * @param kaptcha 用户输入的图片验证码
-     * @param username 用户输入的需要找回的账号
+     * @param kaptcha      用户输入的图片验证码
+     * @param username     用户输入的需要找回的账号
      */
     @PostMapping("/sendEmailCodeForResetPwd")
     @ResponseBody
     public Map<String, Object> sendEmailCodeForResetPwd(Model model, @CookieValue("kaptchaOwner") String kaptchaOwner,
-                                                           @RequestParam("kaptcha") String kaptcha,
-                                                           @RequestParam("username") String username) {
+                                                        @RequestParam("kaptcha") String kaptcha,
+                                                        @RequestParam("username") String username) {
         Map<String, Object> map = new HashMap<>(3);
         // 检查图片验证码
         String kaptchaCheckRst = checkKaptchaCode(kaptchaOwner, kaptcha);
@@ -302,7 +310,7 @@ public class LoginController implements CommunityConstant {
     /**
      * 检查 邮件 验证码
      *
-     * @param username 用户名
+     * @param username  用户名
      * @param checkCode 用户输入的图片验证码
      * @return 验证成功 返回"", 失败则返回原因
      */
