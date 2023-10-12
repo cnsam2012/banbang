@@ -2,7 +2,7 @@ package org.banbang.be.service;
 
 import org.banbang.be.dao.CommentMapper;
 import org.banbang.be.pojo.Comment;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.SensitiveFilter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -17,7 +17,7 @@ import java.util.List;
  * 评论相关
  */
 @Service
-public class CommentService implements CommunityConstant {
+public class CommentService implements BbConstant {
 
     @Autowired
     private CommentMapper commentMapper;

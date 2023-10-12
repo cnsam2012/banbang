@@ -1,19 +1,19 @@
 package org.banbang.be.quartz;
 
+import lombok.extern.slf4j.Slf4j;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.pojo.DiscussPost;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.RedisKeyUtil;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.BoundSetOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.stereotype.Component;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -22,9 +22,9 @@ import java.util.Date;
 /**
  * 帖子分数计算刷新
  */
-public class PostScoreRefreshJob implements Job, CommunityConstant {
-
-    private static final Logger logger = LoggerFactory.getLogger(PostScoreRefreshJob.class);
+@Slf4j
+@Component
+public class PostScoreRefreshJob implements Job, BbConstant {
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -55,15 +55,15 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
         BoundSetOperations operations = redisTemplate.boundSetOps(redisKey);
 
         if (operations.size() == 0) {
-            logger.info("[任务取消] 没有需要刷新的帖子");
+            log.info("[任务取消] 没有需要刷新的帖子");
             return ;
         }
 
-        logger.info("[任务开始] 正在刷新帖子分数: " + operations.size());
+        log.info("[任务开始] 正在刷新帖子分数: " + operations.size());
         while (operations.size() > 0) {
             this.refresh((Integer) operations.pop());
         }
-        logger.info("[任务结束] 帖子分数刷新完毕");
+        log.info("[任务结束] 帖子分数刷新完毕");
     }
 
     /**
@@ -74,7 +74,7 @@ public class PostScoreRefreshJob implements Job, CommunityConstant {
         DiscussPost post = discussPostService.findDiscussPostById(postId);
 
         if (post == null) {
-            logger.error("该帖子不存在: id = " + postId);
+            log.error("该帖子不存在: id = " + postId);
             return ;
         }
 

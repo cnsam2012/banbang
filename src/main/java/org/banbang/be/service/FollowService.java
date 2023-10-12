@@ -1,7 +1,7 @@
 package org.banbang.be.service;
 
 import org.banbang.be.pojo.User;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
@@ -16,7 +16,7 @@ import java.util.*;
  * 关注相关
  */
 @Service
-public class FollowService implements CommunityConstant {
+public class FollowService implements BbConstant {
 
     @Autowired
     private RedisTemplate redisTemplate;

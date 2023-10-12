@@ -1,7 +1,7 @@
 package org.banbang.be.config;
 
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,10 +18,11 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements CommunityConstant {
+public class SecurityConfig extends WebSecurityConfigurerAdapter implements BbConstant {
 
     /**
      * 静态资源
+     *
      * @param web
      * @throws Exception
      */
@@ -35,6 +36,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
 
     /**
      * 授权
+     *
      * @param http
      * @throws Exception
      */
@@ -42,7 +44,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
     protected void configure(HttpSecurity http) throws Exception {
         http.authorizeRequests()
                 .antMatchers(
-                    "/user/setting",
+                        "/user/setting",
                         "/user/upload",
                         "/discuss/add",
                         "/discuss/publish",
@@ -60,7 +62,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                 )
 
                 .antMatchers(
-                    "/discuss/top",
+                        "/discuss/top",
                         "/discuss/wonderful"
                 )
                 .hasAnyAuthority(
@@ -91,14 +93,14 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                             // 异步请求
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(CommunityUtil.getJSONString(403, "你还没有登录"));
-                        }
-                        else {
+                            writer.write(BbUtil.getJSONString(403, "你还没有登录"));
+                        } else {
                             // 普通请求
                             response.sendRedirect(request.getContextPath() + "/login");
                         }
                     }
                 })
+
                 // 2. 权限不够时的处理
                 .accessDeniedHandler(new AccessDeniedHandler() {
                     @Override
@@ -108,9 +110,8 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements Comm
                             // 异步请求
                             response.setContentType("application/plain;charset=utf-8");
                             PrintWriter writer = response.getWriter();
-                            writer.write(CommunityUtil.getJSONString(403, "你没有访问该功能的权限"));
-                        }
-                        else {
+                            writer.write(BbUtil.getJSONString(403, "你没有访问该功能的权限"));
+                        } else {
                             // 普通请求
                             response.sendRedirect(request.getContextPath() + "/denied");
                         }

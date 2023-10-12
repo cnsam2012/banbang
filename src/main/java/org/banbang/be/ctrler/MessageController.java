@@ -1,4 +1,4 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import com.alibaba.fastjson.JSONObject;
 import org.banbang.be.pojo.Message;
@@ -6,21 +6,29 @@ import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.MessageService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.HtmlUtils;
+import springfox.documentation.annotations.ApiIgnore;
+
 import java.util.*;
+
+/**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
 
 /**
  * 私信/系统通知
  */
 @Controller
-public class MessageController implements CommunityConstant {
+public class MessageController implements BbConstant {
 
     @Autowired
     private HostHolder hostHolder;
@@ -168,7 +176,7 @@ public class MessageController implements CommunityConstant {
         // Integer.valueOf("abc"); // 测试统一异常处理（异步请求）
         User target = userService.findUserByName(toName);
         if (target == null) {
-            return CommunityUtil.getJSONString(1, "目标用户不存在");
+            return BbUtil.getJSONString(1, "目标用户不存在");
         }
 
         Message message = new Message();
@@ -186,7 +194,7 @@ public class MessageController implements CommunityConstant {
 
         messageService.addMessage(message);
 
-        return CommunityUtil.getJSONString(0);
+        return BbUtil.getJSONString(0);
     }
 
     /**

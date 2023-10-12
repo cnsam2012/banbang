@@ -50,7 +50,7 @@ spring:
     # Elasticsearch
     # see ${ES_HOME}/elasticsearch.yml
     # in docker container, the config path from /usr/share/elasticsearch/config/elasticsearch.yml
-    # TODO: elasticsearch.cluster-name does not effect in docker usr/share/elasticsearch/config/elasticsearch.yml
+    # TODO: elasticsearch.cluster-name does not effect in docker:/usr/share/elasticsearch/config/elasticsearch.yml
     elasticsearch:
       cluster-name: elasticsearch
       #    cluster-name: community
@@ -109,7 +109,8 @@ spring:
   redis:
     database: 11
     host: ubd
+    port: 6379
 
   thymeleaf:
     cache: false
-    port: 6379
+

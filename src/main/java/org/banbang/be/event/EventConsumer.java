@@ -1,16 +1,15 @@
 package org.banbang.be.event;
 
 import com.alibaba.fastjson.JSONObject;
+import lombok.extern.slf4j.Slf4j;
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Event;
 import org.banbang.be.pojo.Message;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.MessageService;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -21,10 +20,9 @@ import java.util.Map;
 /**
  * 事件消费者
  */
+@Slf4j
 @Component
-public class EventConsumer implements CommunityConstant {
-
-    private static final Logger logger = LoggerFactory.getLogger(EventConsumer.class);
+public class EventConsumer implements BbConstant {
 
     @Autowired
     private MessageService messageService;
@@ -42,12 +40,12 @@ public class EventConsumer implements CommunityConstant {
     @KafkaListener(topics = {TOPIC_COMMNET, TOPIC_LIKE, TOPIC_FOLLOW})
     public void handleMessage(ConsumerRecord record) {
         if (record == null || record.value() == null) {
-            logger.error("消息的内容为空");
+            log.error("消息的内容为空");
             return ;
         }
         Event event = JSONObject.parseObject(record.value().toString(), Event.class);
         if (event == null) {
-            logger.error("消息格式错误");
+            log.error("消息格式错误");
             return ;
         }
 
@@ -79,12 +77,12 @@ public class EventConsumer implements CommunityConstant {
     @KafkaListener(topics = {TOPIC_PUBLISH})
     public void handlePublishMessage(ConsumerRecord record) {
         if (record == null || record.value() == null) {
-            logger.error("消息的内容为空");
+            log.error("消息的内容为空");
             return ;
         }
         Event event = JSONObject.parseObject(record.value().toString(), Event.class);
         if (event == null) {
-            logger.error("消息格式错误");
+            log.error("消息格式错误");
             return ;
         }
 
@@ -99,12 +97,12 @@ public class EventConsumer implements CommunityConstant {
     @KafkaListener(topics = {TOPIC_DELETE})
     public void handleDeleteMessage(ConsumerRecord record) {
         if (record == null || record.value() == null) {
-            logger.error("消息的内容为空");
+            log.error("消息的内容为空");
             return ;
         }
         Event event = JSONObject.parseObject(record.value().toString(), Event.class);
         if (event == null) {
-            logger.error("消息格式错误");
+            log.error("消息格式错误");
             return ;
         }
 

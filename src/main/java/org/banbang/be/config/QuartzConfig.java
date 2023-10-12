@@ -20,11 +20,13 @@ public class QuartzConfig {
     @Bean
     public JobDetailFactoryBean postScoreRefreshJobDetail() {
         JobDetailFactoryBean factoryBean = new JobDetailFactoryBean();
+
         factoryBean.setJobClass(org.banbang.be.quartz.PostScoreRefreshJob.class);
         factoryBean.setName("postScoreRefreshJob");
         factoryBean.setGroup("communityJobGroup");
         factoryBean.setDurability(true);
         factoryBean.setRequestsRecovery(true);
+
         return factoryBean;
     }
 
@@ -35,11 +37,13 @@ public class QuartzConfig {
     @Bean
     public SimpleTriggerFactoryBean postScoreRefreshTrigger(JobDetail postScoreRefreshJobDetail) {
         SimpleTriggerFactoryBean factoryBean = new SimpleTriggerFactoryBean();
+
         factoryBean.setJobDetail(postScoreRefreshJobDetail);
         factoryBean.setName("postScoreRefreshTrigger");
         factoryBean.setGroup("communityTriggerGroup");
         factoryBean.setRepeatInterval(1000 * 60 * 5); // 5分钟刷新一次
         factoryBean.setJobDataMap(new JobDataMap());
+
         return factoryBean;
     }
 }

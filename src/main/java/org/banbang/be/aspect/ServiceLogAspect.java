@@ -38,6 +38,7 @@ public class ServiceLogAspect {
         String ip = request.getRemoteHost();
         String time = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date());
         String target = joinPoint.getSignature().getDeclaringTypeName() + "." + joinPoint.getSignature().getName();
+
         // 用户[IP 地址], 在某个时间访问了 [org.banbang.be.service.xxx]
         logger.info(String.format("用户[%s], 在[%s], 访问了[%s].", ip, time, target));
     }

@@ -1,13 +1,15 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
+import io.swagger.annotations.Api;
+import io.swagger.annotations.ApiOperation;
 import org.banbang.be.pojo.*;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.CommentService;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.banbang.be.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,6 +20,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.validation.constraints.NotEmpty;
 import java.io.File;
@@ -27,8 +30,10 @@ import java.util.*;
  * 帖子
  */
 @Controller
+@ApiIgnore
+@Api(tags = "通知（讨论）页面")
 @RequestMapping("/discuss")
-public class DiscussPostController implements CommunityConstant {
+public class DiscussPostController implements BbConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -65,20 +70,24 @@ public class DiscussPostController implements CommunityConstant {
 
     /**
      * 进入帖子发布页
+     *
      * @return
      */
     @GetMapping("/publish")
-    public String getPublishPage () {
+    @ApiOperation("进入讨论发布页")
+    public String getPublishPage() {
         return "/site/discuss-publish";
     }
 
     /**
      * markdown 图片上传
+     *
      * @param file
      * @return
      */
     @PostMapping("/uploadMdPic")
     @ResponseBody
+    @ApiOperation("图片上传")
     public String uploadMdPic(@RequestParam(value = "editormd-image-file", required = false) MultipartFile file) {
 
         String url = null; // 图片访问地址
@@ -86,7 +95,7 @@ public class DiscussPostController implements CommunityConstant {
             // 获取上传文件的名称
             String trueFileName = file.getOriginalFilename();
             String suffix = trueFileName.substring(trueFileName.lastIndexOf("."));
-            String fileName = CommunityUtil.generateUUID() + suffix;
+            String fileName = BbUtil.generateUUID() + suffix;
 
             // 图片存储路径
             File dest = new File(editormdUploadPath + "/" + fileName);
@@ -99,27 +108,30 @@ public class DiscussPostController implements CommunityConstant {
 
             // 图片访问地址
             url = domain + contextPath + "/editor-md-upload/" + fileName;
+
         } catch (Exception e) {
             e.printStackTrace();
-            return CommunityUtil.getEditorMdJSONString(0, "上传失败", url);
+            return BbUtil.getEditorMdJSONString(500, "上传失败", url);
         }
 
-        return CommunityUtil.getEditorMdJSONString(1, "上传成功", url);
+        return BbUtil.getEditorMdJSONString(201, "上传成功", url);
     }
 
     /**
      * 添加帖子（发帖）
+     *
      * @param title
      * @param content
      * @return
      */
     @PostMapping("/add")
     @ResponseBody
+    @ApiOperation("添加讨论（发布通知）")
     public String addDiscussPost(@NotEmpty(message = "文章标题不能为空") String title, String content) {
         User user = hostHolder.getUser();
 
         if (user == null) {
-            return CommunityUtil.getJSONString(403, "您还未登录");
+            return BbUtil.getJSONString(401, "您还未登录");
         }
 
         DiscussPost discussPost = new DiscussPost();
@@ -142,16 +154,18 @@ public class DiscussPostController implements CommunityConstant {
         String redisKey = RedisKeyUtil.getPostScoreKey();
         redisTemplate.opsForSet().add(redisKey, discussPost.getId());
 
-        return CommunityUtil.getJSONString(0, "发布成功");
+        return BbUtil.getJSONString(201, "发布成功");
     }
 
     /**
      * 进入帖子详情页
+     *
      * @param discussPostId
      * @param model
      * @return
      */
     @GetMapping("/detail/{discussPostId}")
+    @ApiOperation("进入讨论详情页")
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
         // 帖子
         DiscussPost discussPost = discussPostService.findDiscussPostById(discussPostId);
@@ -181,7 +195,7 @@ public class DiscussPostController implements CommunityConstant {
         // 封装评论及其相关信息
         List<Map<String, Object>> commentVoList = new ArrayList<>();
         if (commentList != null) {
-           for (Comment comment : commentList) {
+            for (Comment comment : commentList) {
                 // 存储对帖子的评论
                 Map<String, Object> commentVo = new HashMap<>();
                 commentVo.put("comment", comment); // 评论
@@ -195,7 +209,7 @@ public class DiscussPostController implements CommunityConstant {
 
                 // 存储每个评论对应的回复（不做分页）
                 List<Comment> replyList = commentService.findCommentByEntity(
-                       ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
+                        ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
                 List<Map<String, Object>> replyVoList = new ArrayList<>(); // 封装对评论的评论和评论的作者信息
                 if (replyList != null) {
                     for (Comment reply : replyList) {
@@ -214,13 +228,13 @@ public class DiscussPostController implements CommunityConstant {
                     }
                 }
                 commentVo.put("replys", replyVoList);
-                
+
                 // 每个评论对应的回复数量
                 int replyCount = commentService.findCommentCount(ENTITY_TYPE_COMMENT, comment.getId());
                 commentVo.put("replyCount", replyCount);
 
                 commentVoList.add(commentVo);
-           }
+            }
         }
 
         model.addAttribute("comments", commentVoList);
@@ -229,15 +243,18 @@ public class DiscussPostController implements CommunityConstant {
 
     }
 
+
     /**
-     * TODO: 未完成置顶帖子
      * 置顶帖子
+     *
      * @param id
      * @return
      */
-    @PostMapping("/top")
+    @PutMapping("/top")
     @ResponseBody
+    @ApiOperation("置顶讨论")
     public String updateTop(int id, int type) {
+
         discussPostService.updateType(id, type);
 
         // 触发发帖事件，通过消息队列将其存入 Elasticsearch 服务器
@@ -248,19 +265,21 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 
-        return CommunityUtil.getJSONString(0);
+        return BbUtil.getJSONString(0);
     }
 
 
     /**
-     * TODO: 未完成加精帖子
      * 加精帖子
+     *
      * @param id
      * @return
      */
-    @PostMapping("/wonderful")
+    @PutMapping("/wonderful")
     @ResponseBody
+    @ApiOperation("加精讨论")
     public String setWonderful(int id) {
+
         discussPostService.updateStatus(id, 1);
 
         // 触发发帖事件，通过消息队列将其存入 Elasticsearch 服务器
@@ -275,18 +294,19 @@ public class DiscussPostController implements CommunityConstant {
         String redisKey = RedisKeyUtil.getPostScoreKey();
         redisTemplate.opsForSet().add(redisKey, id);
 
-        return CommunityUtil.getJSONString(0);
+        return BbUtil.getJSONString(0);
     }
 
 
     /**
-     * TODO: 未完成删除帖子
      * 删除帖子
+     *
      * @param id
      * @return
      */
-    @PostMapping("/delete")
+    @DeleteMapping("/delete")
     @ResponseBody
+    @ApiOperation("删除讨论")
     public String setDelete(int id) {
 
         discussPostService.updateStatus(id, 2);
@@ -300,7 +320,7 @@ public class DiscussPostController implements CommunityConstant {
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 
-        return CommunityUtil.getJSONString(0);
+        return BbUtil.getJSONString(0);
     }
 
 

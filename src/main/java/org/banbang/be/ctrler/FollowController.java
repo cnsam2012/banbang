@@ -1,4 +1,4 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.pojo.Event;
 import org.banbang.be.pojo.Page;
@@ -6,8 +6,8 @@ import org.banbang.be.pojo.User;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.FollowService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -16,15 +16,22 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.List;
 import java.util.Map;
 
 /**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
+
+/**
  * 关注(目前只做了关注用户)
  */
 @Controller
-public class FollowController implements CommunityConstant{
+public class FollowController implements BbConstant {
 
     @Autowired
     private FollowService followService;
@@ -60,7 +67,7 @@ public class FollowController implements CommunityConstant{
                 .setEntityUserId(entityId);
         eventProducer.fireEvent(event);
 
-        return CommunityUtil.getJSONString(0, "已关注");
+        return BbUtil.getJSONString(0, "已关注");
     }
 
     /**
@@ -76,7 +83,7 @@ public class FollowController implements CommunityConstant{
 
         followService.unfollow(user.getId(), entityType, entityId);
 
-        return CommunityUtil.getJSONString(0, "已取消关注");
+        return BbUtil.getJSONString(0, "已取消关注");
     }
 
     /**

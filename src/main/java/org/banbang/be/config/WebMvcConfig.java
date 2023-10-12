@@ -1,11 +1,10 @@
 package org.banbang.be.config;
 
-import org.banbang.be.controller.interceptor.DataInterceptor;
-import org.banbang.be.controller.interceptor.LoginTicketInterceptor;
-import org.banbang.be.controller.interceptor.MessageInterceptor;
+import org.banbang.be.ctrler.interceptor.DataInterceptor;
+import org.banbang.be.ctrler.interceptor.LoginTicketInterceptor;
+import org.banbang.be.ctrler.interceptor.MessageInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -44,6 +43,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
         // System.getProperty("user.dir") 获取程序的当前路径
         String path = System.getProperty("user.dir") + "\\src\\main\\resources\\static\\editor-md-upload\\";
         registry.addResourceHandler("/editor-md-upload/**").addResourceLocations("file:" + path);
+
+        // **放行swagger，上线后取消
+        registry.addResourceHandler("swagger-ui.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
+        registry.addResourceHandler("/webjars/**")
+                .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        // **放行swagger拦截，上线后取消
     }
 
     // 跨域访问配置，危险

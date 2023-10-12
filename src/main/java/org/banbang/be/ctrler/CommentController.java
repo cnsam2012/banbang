@@ -1,12 +1,13 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
+import io.swagger.annotations.Api;
 import org.banbang.be.pojo.Comment;
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Event;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.CommentService;
 import org.banbang.be.service.DiscussPostService;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.HostHolder;
 import org.banbang.be.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,15 +16,22 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+
+/**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
 
 /**
  * 评论/回复
  */
 @Controller
 @RequestMapping("/comment")
-public class CommentController implements CommunityConstant {
+public class CommentController implements BbConstant {
 
     @Autowired
     private HostHolder hostHolder;
@@ -48,6 +56,7 @@ public class CommentController implements CommunityConstant {
      */
     @PostMapping("/add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
+
         comment.setUserId(hostHolder.getUser().getId());
         comment.setStatus(0);
         comment.setCreateTime(new Date());

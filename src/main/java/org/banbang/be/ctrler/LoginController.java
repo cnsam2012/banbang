@@ -1,11 +1,11 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import com.google.code.kaptcha.Producer;
 import lombok.extern.slf4j.Slf4j;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
 //import org.slf4j.Logger;
@@ -17,6 +17,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletOutputStream;
@@ -29,11 +30,17 @@ import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
 /**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
+
+/**
  * 登录、登出、注册
  */
 @Controller
 @Slf4j
-public class LoginController implements CommunityConstant {
+public class LoginController implements BbConstant {
 
 //    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -139,7 +146,7 @@ public class LoginController implements CommunityConstant {
         BufferedImage image = kaptchaProducer.createImage(text); // 生成图片
 
         // 验证码的归属者
-        String kaptchaOwner = CommunityUtil.generateUUID();
+        String kaptchaOwner = BbUtil.generateUUID();
         Cookie cookie = new Cookie("kaptchaOwner", kaptchaOwner);
         cookie.setMaxAge(60);
         cookie.setPath(contextPath);
@@ -194,12 +201,14 @@ public class LoginController implements CommunityConstant {
      * @return
      */
     @PostMapping("/login")
-    public String login(@RequestParam("username") String username,
-                        @RequestParam("password") String password,
-                        @RequestParam("code") String code,
-                        @RequestParam(value = "rememberMe", required = false) boolean rememberMe,
-                        Model model, HttpServletResponse response,
-                        @CookieValue("kaptchaOwner") String kaptchaOwner) {
+    public String login(
+            @RequestParam("username") String username,
+            @RequestParam("password") String password,
+            @RequestParam("code") String code,
+            @RequestParam(value = "rememberMe", required = false) boolean rememberMe,
+            Model model, HttpServletResponse response,
+            @CookieValue("kaptchaOwner") String kaptchaOwner
+    ) {
         // 检查验证码
         String kaptcha = null;
         if (StringUtils.isNotBlank(kaptchaOwner)) {
@@ -212,10 +221,12 @@ public class LoginController implements CommunityConstant {
             return "/site/login";
         }
 
-        // 凭证过期时间（是否记住我）
+        // 凭证过期时间（是否记住我）: 7天 & 12小时
         int expiredSeconds = rememberMe ? REMEMBER_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
+
         // 验证用户名和密码
         Map<String, Object> map = userService.login(username, password, expiredSeconds);
+
         if (map.containsKey("ticket")) {
             // 账号和密码均正确，则服务端会生成 ticket，浏览器通过 cookie 存储 ticket
             Cookie cookie = new Cookie("ticket", map.get("ticket").toString());

@@ -1,12 +1,12 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.pojo.Comment;
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.*;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
@@ -18,16 +18,22 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 
+/**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
 
 /**
  * 用户
  */
 @Controller
 @RequestMapping("/user")
-public class UserController implements CommunityConstant {
+public class UserController implements BbConstant {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -77,12 +83,12 @@ public class UserController implements CommunityConstant {
     @GetMapping("/setting")
     public String getSettingPage(Model model) {
         // 生成上传文件的名称
-        String fileName = CommunityUtil.generateUUID();
+        String fileName = BbUtil.generateUUID();
         model.addAttribute("fileName", fileName);
 
         // 设置响应信息(qiniu 的规定写法)
         StringMap policy = new StringMap();
-        policy.put("returnBody", CommunityUtil.getJSONString(0));
+        policy.put("returnBody", BbUtil.getJSONString(0));
 
         // 生成上传到 qiniu 的凭证(qiniu 的规定写法)
         Auth auth = Auth.create(accessKey, secretKey);
@@ -102,14 +108,14 @@ public class UserController implements CommunityConstant {
     @ResponseBody
     public String updateHeaderUrl(String fileName) {
         if (StringUtils.isBlank(fileName)) {
-            return CommunityUtil.getJSONString(1, "文件名不能为空");
+            return BbUtil.getJSONString(1, "文件名不能为空");
         }
 
         // 文件在云服务器上的的访问路径
         String url = headerBucketUrl + "/" + fileName;
         userService.updateHeader(hostHolder.getUser().getId(), url);
 
-        return CommunityUtil.getJSONString(0);
+        return BbUtil.getJSONString(0);
 
     }
 
@@ -125,7 +131,7 @@ public class UserController implements CommunityConstant {
     public String updatePassword(String oldPassword, String newPassword, Model model) {
         // 验证原密码是否正确
         User user = hostHolder.getUser();
-        String md5OldPassword = CommunityUtil.md5(oldPassword + user.getSalt());
+        String md5OldPassword = BbUtil.md5(oldPassword + user.getSalt());
 
         // 注释此段暂时取消判断原密码、验证密码
         if (!user.getPassword().equals(md5OldPassword)) {
@@ -134,7 +140,7 @@ public class UserController implements CommunityConstant {
         }
 
         // 判断新密码是否合法
-        String md5NewPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        String md5NewPassword = BbUtil.md5(newPassword + user.getSalt());
         if (user.getPassword().equals(md5NewPassword)) {
             model.addAttribute("newPasswordError", "新密码和原密码相同");
             return "/site/setting";

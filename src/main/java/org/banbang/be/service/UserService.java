@@ -3,8 +3,8 @@ package org.banbang.be.service;
 import org.banbang.be.dao.UserMapper;
 import org.banbang.be.pojo.LoginTicket;
 import org.banbang.be.pojo.User;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.MailClient;
 import org.banbang.be.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * 用户相关
  */
 @Service
-public class UserService implements CommunityConstant {
+public class UserService implements BbConstant {
 
     @Autowired
     private UserMapper userMapper;
@@ -110,11 +110,11 @@ public class UserService implements CommunityConstant {
         }
 
         // 注册用户
-        user.setSalt(CommunityUtil.generateUUID().substring(0, 5)); // salt
-        user.setPassword(CommunityUtil.md5(user.getPassword() + user.getSalt())); // 加盐加密
+        user.setSalt(BbUtil.generateUUID().substring(0, 5)); // salt
+        user.setPassword(BbUtil.md5(user.getPassword() + user.getSalt())); // 加盐加密
         user.setType(0); // 默认普通用户
         user.setStatus(0); // 默认未激活
-        user.setActivationCode(CommunityUtil.generateUUID()); // 激活码
+        user.setActivationCode(BbUtil.generateUUID()); // 激活码
         // 随机头像（用户登录后可以自行修改）
         user.setHeaderUrl(String.format("http://images.nowcoder.com/head/%dt.png", new Random().nextInt(1000)));
         user.setCreateTime(new Date()); // 注册时间
@@ -190,8 +190,7 @@ public class UserService implements CommunityConstant {
         }
 
         // 验证密码
-        password = CommunityUtil.md5(password + user.getSalt());
-
+        password = BbUtil.md5(password + user.getSalt());
         if (!user.getPassword().equals(password)) {
             map.put("passwordMsg", "密码错误");
             return map;
@@ -200,7 +199,7 @@ public class UserService implements CommunityConstant {
         // 用户名和密码均正确，为该用户生成登录凭证
         LoginTicket loginTicket = new LoginTicket();
         loginTicket.setUserId(user.getId());
-        loginTicket.setTicket(CommunityUtil.generateUUID()); // 随机凭证
+        loginTicket.setTicket(BbUtil.generateUUID()); // 随机凭证
         loginTicket.setStatus(0); // 设置凭证状态为有效（当用户登出的时候，设置凭证状态为无效）
         loginTicket.setExpired(new Date(System.currentTimeMillis() + expiredSeconds * 1000)); // 设置凭证到期时间
 
@@ -209,7 +208,6 @@ public class UserService implements CommunityConstant {
         redisTemplate.opsForValue().set(redisKey, loginTicket);
 
         map.put("ticket", loginTicket.getTicket());
-
         return map;
     }
 
@@ -259,7 +257,7 @@ public class UserService implements CommunityConstant {
     public int updatePassword(int userId, String newPassword) {
         User user = userMapper.selectById(userId);
         // 重新加盐加密
-        newPassword = CommunityUtil.md5(newPassword + user.getSalt());
+        newPassword = BbUtil.md5(newPassword + user.getSalt());
         clearCache(userId);
         return userMapper.updatePassword(userId, newPassword);
     }
@@ -340,7 +338,7 @@ public class UserService implements CommunityConstant {
         }
 
         // 生成6位验证码
-        String randomCode = CommunityUtil.getRandomCode(6);
+        String randomCode = BbUtil.getRandomCode(6);
         // 给注册用户发送激活邮件
         Context context = new Context();
         context.setVariable("email", "您的验证码是 " + randomCode);
@@ -373,7 +371,7 @@ public class UserService implements CommunityConstant {
             map.put("errMsg", "未发现账号");
             return map;
         }
-        final String passwordEncode = CommunityUtil.md5(password + user.getSalt());
+        final String passwordEncode = BbUtil.md5(password + user.getSalt());
         int i = userMapper.updatePassword(user.getId(), passwordEncode);
         if (i <= 0) {
             map.put("errMsg", "修改数据库密码错误");

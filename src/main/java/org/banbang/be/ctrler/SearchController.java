@@ -1,15 +1,16 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Page;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.*;
 
@@ -17,7 +18,8 @@ import java.util.*;
  * 搜索
  */
 @Controller
-public class SearchController implements CommunityConstant {
+@ApiIgnore
+public class SearchController implements BbConstant {
 
     @Autowired
     private ElasticsearchService elasticsearchService;
@@ -38,9 +40,11 @@ public class SearchController implements CommunityConstant {
      */
     @GetMapping("/search")
     public String search(String keyword, Page page, Model model) {
+
         // 搜索帖子 (Spring 提供的 Page 当前页码从 0 开始计数)
         org.springframework.data.domain.Page<DiscussPost> searchResult =
             elasticsearchService.searchDiscussPost(keyword, page.getCurrent()-1, page.getLimit());
+
         // 聚合数据
         List<Map<String, Object>> discussPosts = new ArrayList<>();
         if (searchResult != null) {

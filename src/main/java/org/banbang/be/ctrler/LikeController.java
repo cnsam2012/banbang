@@ -1,11 +1,11 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.pojo.Event;
 import org.banbang.be.pojo.User;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.LikeService;
-import org.banbang.be.util.CommunityConstant;
-import org.banbang.be.util.CommunityUtil;
+import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.banbang.be.util.RedisKeyUtil;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,14 +13,22 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import springfox.documentation.annotations.ApiIgnore;
+
 import java.util.HashMap;
 import java.util.Map;
+
+/**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
 
 /**
  * 点赞
  */
 @Controller
-public class LikeController implements CommunityConstant {
+public class LikeController implements BbConstant {
 
     @Autowired
     private HostHolder hostHolder;
@@ -75,7 +83,7 @@ public class LikeController implements CommunityConstant {
             redisTemplate.opsForSet().add(redisKey, postId);
         }
 
-        return CommunityUtil.getJSONString(0, null, map);
+        return BbUtil.getJSONString(0, null, map);
     }
 
 }

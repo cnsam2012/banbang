@@ -1,17 +1,19 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
+import io.swagger.annotations.Api;
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.CommunityConstant;
+import org.banbang.be.util.BbConstant;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -22,7 +24,9 @@ import java.util.Map;
  * 首页
  */
 @Controller
-public class IndexController implements CommunityConstant {
+@Api(tags = "首页")
+@ApiIgnore
+public class IndexController implements BbConstant {
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -46,7 +50,11 @@ public class IndexController implements CommunityConstant {
      * @return
      */
     @GetMapping("/index")
-    public String getIndexPage(Model model, Page page, @RequestParam(name = "orderMode", defaultValue = "0") int orderMode) {
+    public String getIndexPage(
+            Model model,
+            Page page,
+            @RequestParam(name = "orderMode", defaultValue = "0") int orderMode
+    ) {
         // 获取总页数
         page.setRows(discussPostService.findDiscussPostRows(0));
         page.setPath("/index?orderMode=" + orderMode);
@@ -72,6 +80,7 @@ public class IndexController implements CommunityConstant {
         }
         model.addAttribute("discussPosts", discussPosts);
         model.addAttribute("orderMode", orderMode);
+        model.addAttribute("page", page);
 
         return "index";
     }

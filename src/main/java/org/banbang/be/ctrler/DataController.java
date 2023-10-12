@@ -1,4 +1,4 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.service.DataService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,8 +8,15 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import springfox.documentation.annotations.ApiIgnore;
 
 import java.util.Date;
+
+/**
+ * 未改造完成，此处为临时标识
+ */
+@Deprecated
+@ApiIgnore
 
 /**
  * 网站数据

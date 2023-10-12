@@ -7,7 +7,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.Validate;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.springframework.http.HttpStatus;
 import org.springframework.util.DigestUtils;
 
 import java.util.HashMap;
@@ -15,7 +14,7 @@ import java.util.Map;
 import java.util.UUID;
 
 @Slf4j
-public class CommunityUtil {
+public class BbUtil {
 
     /**
      * 生成随机字符串
@@ -42,20 +41,24 @@ public class CommunityUtil {
      * 将服务端返回的消息封装成 JSON 格式的字符串
      * @param code 状态码
      * @param msg 提示消息
-     * @param map 业务数据
+     * @param dataMap 业务数据
      * @return 返回 JSON 格式字符串
      */
-    public static String getJSONString(int code, String msg, Map<String, Object> map) {
+    public static String getJSONString(int code, String msg, Map<String, Object> dataMap) {
         JSONObject json = new JSONObject();
+
         json.put("code", code);
         json.put("msg", msg);
-        if (map != null) {
-            for (String key : map.keySet()) {
-                json.put(key, map.get(key));
+
+        if (dataMap != null) {
+            for (String key : dataMap.keySet()) {
+                json.put(key, dataMap.get(key));
             }
         }
         return json.toJSONString();
     }
+
+
 
     // 重载 getJSONString 方法，服务端方法可能不返回业务数据
     public static String getJSONString(int code, String msg) {
@@ -94,13 +97,14 @@ public class CommunityUtil {
      * 测试
      */
     @Test
-    public void testCommunityUtil() {
+    public void testBbUtil() {
         Map<String, Object> map = new HashMap<>();
         map.put("name", "Jack");
         map.put("age", 18);
-        // {"msg":"ok","code":0,"name":"Jack","age":18}
+
         log.info(getJSONString(0, "ok", map));
-        log.info(CommunityUtil.generateUUID());
+        log.info(BbUtil.generateUUID());
+
         Assertions.assertEquals(1,1);
     }
 

@@ -1,11 +1,10 @@
-package org.banbang.be.controller;
+package org.banbang.be.ctrler;
 
 import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
-import org.banbang.be.service.TEST_MyService;
 import org.banbang.be.service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -17,7 +16,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.banbang.be.util.CommunityConstant.ENTITY_TYPE_POST;
+import static org.banbang.be.util.BbConstant.ENTITY_TYPE_POST;
 
 @Controller
 @ResponseBody
@@ -62,10 +61,14 @@ public class TEST_MyCttler {
         return "index";
     }
 
-    @RequestMapping(value = "foftest", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "bl", method = {RequestMethod.GET, RequestMethod.POST})
     @ResponseBody
-    public String foftest(String ok) throws Exception {
-        throw new Exception();
+    public String foftest(Integer ok) throws Exception {
+        if (ok == null) {
+            return "null";
+        } else {
+            return ok.toString();
+        }
     }
 
 

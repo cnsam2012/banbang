@@ -1,4 +1,4 @@
-package org.banbang.be.controller.interceptor;
+package org.banbang.be.ctrler.interceptor;
 
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.DataService;
