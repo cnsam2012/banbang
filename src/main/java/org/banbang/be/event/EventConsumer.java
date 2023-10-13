@@ -8,8 +8,9 @@ import org.banbang.be.pojo.Message;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.MessageService;
-import org.banbang.be.util.BbConstant;
 import org.apache.kafka.clients.consumer.ConsumerRecord;
+import org.banbang.be.util.constant.BbSystemUser;
+import org.banbang.be.util.constant.IBbKafkaTopicConst;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.kafka.annotation.KafkaListener;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ import java.util.Map;
  */
 @Slf4j
 @Component
-public class EventConsumer implements BbConstant {
+public class EventConsumer implements IBbKafkaTopicConst {
 
     @Autowired
     private MessageService messageService;
@@ -39,6 +40,7 @@ public class EventConsumer implements BbConstant {
      */
     @KafkaListener(topics = {TOPIC_COMMNET, TOPIC_LIKE, TOPIC_FOLLOW})
     public void handleMessage(ConsumerRecord record) {
+
         if (record == null || record.value() == null) {
             log.error("消息的内容为空");
             return ;
@@ -51,7 +53,7 @@ public class EventConsumer implements BbConstant {
 
         // 发送系统通知
         Message message = new Message();
-        message.setFromId(SYSTEM_USER_ID);
+        message.setFromId(BbSystemUser.SYSTEM_USER_ID.value());
         message.setToId(event.getEntityUserId());
         message.setConversationId(event.getTopic());
         message.setCreateTime(new Date());

@@ -1,6 +1,5 @@
 package org.banbang.be.ctrler;
 
-import com.alibaba.fastjson.JSON;
 import io.swagger.annotations.*;
 import lombok.extern.slf4j.Slf4j;
 import lombok.var;
@@ -11,15 +10,14 @@ import org.banbang.be.service.CommentService;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.banbang.be.util.RedisKeyUtil;
+import org.banbang.be.util.constant.BbEntityType;
+import org.banbang.be.util.constant.BbKafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
-import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.util.HtmlUtils;
@@ -36,7 +34,7 @@ import java.util.*;
 @Api(tags = "通知（讨论）API")
 @RequestMapping("/api/discuss")
 @Slf4j
-public class DiscussPostAPIController implements BbConstant {
+public class DiscussPostAPIController {
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -160,10 +158,11 @@ public class DiscussPostAPIController implements BbConstant {
         discussPostService.addDiscussPost(discussPost);
 
         // 触发发帖事件，通过消息队列将其存入 Elasticsearch 服务器
+
         Event event = new Event()
-                .setTopic(TOPIC_PUBLISH)
+                .setTopic(BbKafkaTopic.TOPIC_PUBLISH.value())
                 .setUserId(user.getId())
-                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityType(BbEntityType.ENTITY_TYPE_POST.value())
                 .setEntityId(discussPost.getId());
         eventProducer.fireEvent(event);
 
@@ -211,7 +210,7 @@ public class DiscussPostAPIController implements BbConstant {
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
 
-                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), post.getId());
                 map.put("likeCount", likeCount);
 
                 discussPosts.add(map);
@@ -256,12 +255,12 @@ public class DiscussPostAPIController implements BbConstant {
         data.put("user", user);
 
         // 点赞数量
-        long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, discussPostId);
+        long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), discussPostId);
         data.put("likeCount", likeCount);
 
         // 当前登录用户的点赞状态
         int likeStatus = hostHolder.getUser() == null ? 0 :
-                likeService.findEntityLikeStatus(hostHolder.getUser().getId(), ENTITY_TYPE_POST, discussPostId);
+                likeService.findEntityLikeStatus(hostHolder.getUser().getId(), BbEntityType.ENTITY_TYPE_POST.value(), discussPostId);
         data.put("likeStatus", likeStatus);
 
         // 评论分页信息
@@ -271,7 +270,7 @@ public class DiscussPostAPIController implements BbConstant {
 
         // 帖子的评论列表
         List<Comment> commentList = commentService.findCommentByEntity(
-                ENTITY_TYPE_POST, discussPost.getId(), page.getOffset(), page.getLimit());
+                BbEntityType.ENTITY_TYPE_POST.value(), discussPost.getId(), page.getOffset(), page.getLimit());
 
         // 封装评论及其相关信息
         List<Map<String, Object>> commentVoList = new ArrayList<>();
@@ -281,16 +280,16 @@ public class DiscussPostAPIController implements BbConstant {
                 Map<String, Object> commentVo = new HashMap<>();
                 commentVo.put("comment", comment); // 评论
                 commentVo.put("user", userService.findUserById(comment.getUserId())); // 发布评论的作者
-                likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, comment.getId()); // 该评论点赞数量
+                likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_COMMENT.value(), comment.getId()); // 该评论点赞数量
                 commentVo.put("likeCount", likeCount);
                 likeStatus = hostHolder.getUser() == null ? 0 : likeService.findEntityLikeStatus(
-                        hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, comment.getId()); // 当前登录用户对该评论的点赞状态
+                        hostHolder.getUser().getId(), BbEntityType.ENTITY_TYPE_COMMENT.value(), comment.getId()); // 当前登录用户对该评论的点赞状态
                 commentVo.put("likeStatus", likeStatus);
 
 
                 // 存储每个评论对应的回复（不做分页）
                 List<Comment> replyList = commentService.findCommentByEntity(
-                        ENTITY_TYPE_COMMENT, comment.getId(), 0, Integer.MAX_VALUE);
+                        BbEntityType.ENTITY_TYPE_COMMENT.value(), comment.getId(), 0, Integer.MAX_VALUE);
                 List<Map<String, Object>> replyVoList = new ArrayList<>(); // 封装对评论的评论和评论的作者信息
                 if (replyList != null) {
                     for (Comment reply : replyList) {
@@ -299,10 +298,10 @@ public class DiscussPostAPIController implements BbConstant {
                         replyVo.put("user", userService.findUserById(reply.getUserId())); // 发布该回复的作者
                         User target = reply.getTargetId() == 0 ? null : userService.findUserById(reply.getTargetId());
                         replyVo.put("target", target); // 该回复的目标用户
-                        likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_COMMENT, reply.getId());
+                        likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_COMMENT.value(), reply.getId());
                         replyVo.put("likeCount", likeCount); // 该回复的点赞数量
                         likeStatus = hostHolder.getUser() == null ? 0 : likeService.findEntityLikeStatus(
-                                hostHolder.getUser().getId(), ENTITY_TYPE_COMMENT, reply.getId());
+                                hostHolder.getUser().getId(), BbEntityType.ENTITY_TYPE_COMMENT.value(), reply.getId());
                         replyVo.put("likeStatus", likeStatus); // 当前登录用户的点赞状态
 
                         replyVoList.add(replyVo);
@@ -311,7 +310,7 @@ public class DiscussPostAPIController implements BbConstant {
                 commentVo.put("replys", replyVoList);
 
                 // 每个评论对应的回复数量
-                int replyCount = commentService.findCommentCount(ENTITY_TYPE_COMMENT, comment.getId());
+                int replyCount = commentService.findCommentCount(BbEntityType.ENTITY_TYPE_COMMENT.value(), comment.getId());
                 commentVo.put("replyCount", replyCount);
 
                 commentVoList.add(commentVo);
@@ -346,9 +345,9 @@ public class DiscussPostAPIController implements BbConstant {
 
         // 触发发帖事件，通过消息队列将其存入 Elasticsearch 服务器
         Event event = new Event()
-                .setTopic(TOPIC_PUBLISH)
+                .setTopic(BbKafkaTopic.TOPIC_PUBLISH.value())
                 .setUserId(hostHolder.getUser().getId())
-                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityType(BbEntityType.ENTITY_TYPE_POST.value())
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 
@@ -371,11 +370,12 @@ public class DiscussPostAPIController implements BbConstant {
 
         // 触发发帖事件，通过消息队列将其存入 Elasticsearch 服务器
         Event event = new Event()
-                .setTopic(TOPIC_PUBLISH)
+                .setTopic(BbKafkaTopic.TOPIC_PUBLISH.value())
                 .setUserId(hostHolder.getUser().getId())
-                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityType(BbEntityType.ENTITY_TYPE_POST.value())
                 .setEntityId(id);
         eventProducer.fireEvent(event);
+
 
         // 计算帖子分数
         String redisKey = RedisKeyUtil.getPostScoreKey();
@@ -407,9 +407,9 @@ public class DiscussPostAPIController implements BbConstant {
 
         // 触发删帖事件，通过消息队列更新 Elasticsearch 服务器
         Event event = new Event()
-                .setTopic(TOPIC_DELETE)
+                .setTopic(BbKafkaTopic.TOPIC_DELETE.value())
                 .setUserId(hostHolder.getUser().getId())
-                .setEntityType(ENTITY_TYPE_POST)
+                .setEntityType(BbEntityType.ENTITY_TYPE_POST.value())
                 .setEntityId(id);
         eventProducer.fireEvent(event);
 

@@ -2,8 +2,9 @@ package org.banbang.be.service;
 
 import org.banbang.be.dao.CommentMapper;
 import org.banbang.be.pojo.Comment;
-import org.banbang.be.util.BbConstant;
+//import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.SensitiveFilter;
+import org.banbang.be.util.constant.BbEntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Isolation;
@@ -17,7 +18,7 @@ import java.util.List;
  * 评论相关
  */
 @Service
-public class CommentService implements BbConstant {
+public class CommentService {
 
     @Autowired
     private CommentMapper commentMapper;
@@ -100,7 +101,7 @@ public class CommentService implements BbConstant {
         int rows = commentMapper.insertComment(comment);
 
         // 更新帖子的评论数量
-        if (comment.getEntityType() == ENTITY_TYPE_POST) {
+        if (comment.getEntityType() == BbEntityType.ENTITY_TYPE_POST.value()) {
             int count = commentMapper.selectCountByEntity(comment.getEntityType(), comment.getEntityId());
             discussPostService.updateCommentCount(comment.getEntityId(), count);
         }

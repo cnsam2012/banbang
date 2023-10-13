@@ -4,10 +4,11 @@ import org.banbang.be.pojo.Event;
 import org.banbang.be.pojo.User;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.LikeService;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import org.banbang.be.util.RedisKeyUtil;
+import org.banbang.be.util.constant.BbEntityType;
+import org.banbang.be.util.constant.BbKafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.stereotype.Controller;
@@ -28,7 +29,7 @@ import java.util.Map;
  * 点赞
  */
 @Controller
-public class LikeController implements BbConstant {
+public class LikeController {
 
     @Autowired
     private HostHolder hostHolder;
@@ -68,7 +69,7 @@ public class LikeController implements BbConstant {
         // 触发点赞事件（系统通知） - 取消点赞不通知
         if (likeStatus == 1) {
             Event event = new Event()
-                    .setTopic(TOPIC_LIKE)
+                    .setTopic(BbKafkaTopic.TOPIC_LIKE.value())
                     .setUserId(hostHolder.getUser().getId())
                     .setEntityType(entityType)
                     .setEntityId(entityId)
@@ -77,7 +78,7 @@ public class LikeController implements BbConstant {
             eventProducer.fireEvent(event);
         }
 
-        if (entityType == ENTITY_TYPE_POST) {
+        if (entityType == BbEntityType.ENTITY_TYPE_POST.value()) {
             // 计算帖子分数
             String redisKey = RedisKeyUtil.getPostScoreKey();
             redisTemplate.opsForSet().add(redisKey, postId);

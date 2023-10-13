@@ -6,6 +6,7 @@ import org.banbang.be.pojo.User;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
+import org.banbang.be.util.constant.BbEntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -15,8 +16,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import static org.banbang.be.util.BbConstant.ENTITY_TYPE_POST;
 
 @Controller
 @ResponseBody
@@ -49,7 +48,7 @@ public class TEST_MyCttler {
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
 
-                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), post.getId());
                 map.put("likeCount", likeCount);
 
                 discussPosts.add(map);

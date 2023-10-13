@@ -2,14 +2,14 @@ package org.banbang.be.ctrler;
 
 import com.google.code.kaptcha.Producer;
 import lombok.extern.slf4j.Slf4j;
+import lombok.var;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
-//import org.slf4j.Logger;
-//import org.slf4j.LoggerFactory;
+import org.banbang.be.util.constant.BbActivationStatus;
+import org.banbang.be.util.constant.BbExpiredSeconds;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -40,7 +40,7 @@ import java.util.concurrent.TimeUnit;
  */
 @Controller
 @Slf4j
-public class LoginController implements BbConstant {
+public class LoginController {
 
 //    private static final Logger logger = LoggerFactory.getLogger(LoginController.class);
 
@@ -118,14 +118,17 @@ public class LoginController implements BbConstant {
     public String activation(Model model, @PathVariable("userId") int userId,
                              @PathVariable("code") String code) {
         int result = userService.activation(userId, code);
-        if (result == ACTIVATION_SUCCESS) {
+        if (result == BbActivationStatus.ACTIVATION_SUCCESS.value()) {
             model.addAttribute("msg", "激活成功, 您的账号已经可以正常使用!");
             model.addAttribute("target", "/login");
-        } else if (result == ACTIVATION_REPEAT) {
+        } else if (result == BbActivationStatus.ACTIVATION_REPEAT.value()) {
             model.addAttribute("msg", "无效的操作, 您的账号已被激活过!");
             model.addAttribute("target", "/index");
-        } else {
+        } else if (result == BbActivationStatus.ACTIVATION_FAILURE.value()) {
             model.addAttribute("msg", "激活失败, 您提供的激活码不正确!");
+            model.addAttribute("target", "/index");
+        } else {
+            model.addAttribute("msg", "激活失败, 未知异常!");
             model.addAttribute("target", "/index");
         }
         return "/site/operate-result";
@@ -222,7 +225,9 @@ public class LoginController implements BbConstant {
         }
 
         // 凭证过期时间（是否记住我）: 7天 & 12小时
-        int expiredSeconds = rememberMe ? REMEMBER_EXPIRED_SECONDS : DEFAULT_EXPIRED_SECONDS;
+        var rem = BbExpiredSeconds.REMEMBER_EXPIRED_SECONDS.value();
+        var exp = BbExpiredSeconds.DEFAULT_EXPIRED_SECONDS.value();
+        int expiredSeconds = rememberMe ? rem : exp;
 
         // 验证用户名和密码
         Map<String, Object> map = userService.login(username, password, expiredSeconds);

@@ -3,6 +3,7 @@ package org.banbang.be;
 import lombok.extern.slf4j.Slf4j;
 import org.banbang.be.util.BbUtil;
 import org.junit.jupiter.api.Test;
+import org.springframework.http.HttpStatus;
 
 @Slf4j
 public class BbbeExeClass {
@@ -16,5 +17,8 @@ public class BbbeExeClass {
     public void slf4jTest() {
         log.info("this is a logn info");
         log.info("{}", "doneododododododo");
+
+        HttpStatus conflict = HttpStatus.CONFLICT;
+        System.out.println(conflict);
     }
 }

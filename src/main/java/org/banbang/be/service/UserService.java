@@ -3,11 +3,12 @@ package org.banbang.be.service;
 import org.banbang.be.dao.UserMapper;
 import org.banbang.be.pojo.LoginTicket;
 import org.banbang.be.pojo.User;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.MailClient;
 import org.banbang.be.util.RedisKeyUtil;
 import org.apache.commons.lang3.StringUtils;
+import org.banbang.be.util.constant.BbActivationStatus;
+import org.banbang.be.util.constant.BbUserAuth;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.RedisTemplate;
@@ -15,7 +16,6 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.stereotype.Service;
 import org.thymeleaf.TemplateEngine;
 import org.thymeleaf.context.Context;
-
 import java.util.*;
 import java.util.concurrent.TimeUnit;
 
@@ -24,7 +24,7 @@ import java.util.concurrent.TimeUnit;
  * 用户相关
  */
 @Service
-public class UserService implements BbConstant {
+public class UserService {
 
     @Autowired
     private UserMapper userMapper;
@@ -142,16 +142,16 @@ public class UserService implements BbConstant {
         User user = userMapper.selectById(userId);
         if (user.getStatus() == 1) {
             // 用户已激活
-            return ACTIVATION_REPEAT;
+            return BbActivationStatus.ACTIVATION_REPEAT.value();
         }
         else if (user.getActivationCode().equals(code)) {
             // 修改用户状态为已激活
             userMapper.updateStatus(userId, 1);
             clearCache(userId); // 用户信息变更，清除缓存中的旧数据
-            return ACTIVATION_SUCCESS;
+            return BbActivationStatus.ACTIVATION_SUCCESS.value();
         }
         else {
-            return ACTIVATION_FAILURE;
+            return BbActivationStatus.ACTIVATION_FAILURE.value();
         }
     }
 
@@ -306,11 +306,11 @@ public class UserService implements BbConstant {
             public String getAuthority() {
                 switch (user.getType()) {
                     case 1:
-                        return AUTHORITY_ADMIN;
+                        return BbUserAuth.AUTHORITY_ADMIN.value();
                     case 2:
-                        return AUTHORITY_MODERATOR;
+                        return BbUserAuth.AUTHORITY_MODERATOR.value();
                     default:
-                        return AUTHORITY_USER;
+                        return BbUserAuth.AUTHORITY_USER.value();
                 }
             }
         });

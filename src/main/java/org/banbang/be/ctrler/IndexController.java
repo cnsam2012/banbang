@@ -7,7 +7,7 @@ import org.banbang.be.pojo.User;
 import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.constant.BbEntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -26,7 +26,7 @@ import java.util.Map;
 @Controller
 @Api(tags = "首页")
 @ApiIgnore
-public class IndexController implements BbConstant {
+public class IndexController {
 
     @Autowired
     private DiscussPostService discussPostService;
@@ -72,7 +72,7 @@ public class IndexController implements BbConstant {
                 User user = userService.findUserById(post.getUserId());
                 map.put("user", user);
 
-                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), post.getId());
                 map.put("likeCount", likeCount);
 
                 discussPosts.add(map);

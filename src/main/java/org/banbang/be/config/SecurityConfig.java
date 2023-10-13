@@ -1,7 +1,7 @@
 package org.banbang.be.config;
 
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
+import org.banbang.be.util.constant.BbUserAuth;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.access.AccessDeniedException;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -18,7 +18,7 @@ import java.io.IOException;
 import java.io.PrintWriter;
 
 @Configuration
-public class SecurityConfig extends WebSecurityConfigurerAdapter implements BbConstant {
+public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
     /**
      * 静态资源
@@ -56,9 +56,9 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements BbCo
                         "/unfollow"
                 )
                 .hasAnyAuthority(
-                        AUTHORITY_USER,
-                        AUTHORITY_ADMIN,
-                        AUTHORITY_MODERATOR
+                        BbUserAuth.AUTHORITY_USER.value(),
+                        BbUserAuth.AUTHORITY_ADMIN.value(),
+                        BbUserAuth.AUTHORITY_MODERATOR.value()
                 )
 
                 .antMatchers(
@@ -66,7 +66,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements BbCo
                         "/discuss/wonderful"
                 )
                 .hasAnyAuthority(
-                        AUTHORITY_MODERATOR
+                        BbUserAuth.AUTHORITY_MODERATOR.value()
                 )
 
                 .antMatchers(
@@ -75,7 +75,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter implements BbCo
                         "/data/**"
                 )
                 .hasAnyAuthority(
-                        AUTHORITY_ADMIN
+                        BbUserAuth.AUTHORITY_ADMIN.value()
                 )
 
                 .anyRequest().permitAll()

@@ -5,8 +5,8 @@ import org.banbang.be.service.DiscussPostService;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.pojo.DiscussPost;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.RedisKeyUtil;
+import org.banbang.be.util.constant.BbEntityType;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
@@ -24,7 +24,7 @@ import java.util.Date;
  */
 @Slf4j
 @Component
-public class PostScoreRefreshJob implements Job, BbConstant {
+public class PostScoreRefreshJob implements Job {
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -83,7 +83,7 @@ public class PostScoreRefreshJob implements Job, BbConstant {
         // 评论数量
         int commentCount = post.getCommentCount();
         // 点赞数量
-        long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, postId);
+        long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), postId);
 
         // 计算权重
         double w = (wonderful ? 75 : 0) + commentCount * 10 + likeCount * 2;

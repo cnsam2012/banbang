@@ -5,7 +5,7 @@ import org.banbang.be.pojo.Page;
 import org.banbang.be.service.ElasticsearchService;
 import org.banbang.be.service.LikeService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
+import org.banbang.be.util.constant.BbEntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -19,7 +19,7 @@ import java.util.*;
  */
 @Controller
 @ApiIgnore
-public class SearchController implements BbConstant {
+public class SearchController {
 
     @Autowired
     private ElasticsearchService elasticsearchService;
@@ -55,7 +55,7 @@ public class SearchController implements BbConstant {
                 // 作者
                 map.put("user", userService.findUserById(post.getUserId()));
                 // 点赞数量
-                map.put("likeCount", likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId()));
+                map.put("likeCount", likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), post.getId()));
 
                 discussPosts.add(map);
             }

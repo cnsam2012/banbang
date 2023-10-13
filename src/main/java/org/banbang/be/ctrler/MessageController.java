@@ -6,9 +6,9 @@ import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.MessageService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
+import org.banbang.be.util.constant.BbKafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -28,7 +28,7 @@ import java.util.*;
  * 私信/系统通知
  */
 @Controller
-public class MessageController implements BbConstant {
+public class MessageController {
 
     @Autowired
     private HostHolder hostHolder;
@@ -207,7 +207,7 @@ public class MessageController implements BbConstant {
         User user = hostHolder.getUser();
 
         // 查询评论类通知
-        Message message = messageService.findLatestNotice(user.getId(), TOPIC_COMMNET);
+        Message message = messageService.findLatestNotice(user.getId(), BbKafkaTopic.TOPIC_COMMNET.value());
         // 封装通知需要的各种数据
         if (message != null) {
             Map<String, Object> messageVO = new HashMap<>();
@@ -222,17 +222,17 @@ public class MessageController implements BbConstant {
             messageVO.put("entityId", data.get("entityId"));
             messageVO.put("postId", data.get("postId"));
 
-            int count = messageService.findNoticeCount(user.getId(), TOPIC_COMMNET);
+            int count = messageService.findNoticeCount(user.getId(), BbKafkaTopic.TOPIC_COMMNET.value());
             messageVO.put("count", count);
 
-            int unread = messageService.findNoticeUnReadCount(user.getId(), TOPIC_COMMNET);
+            int unread = messageService.findNoticeUnReadCount(user.getId(), BbKafkaTopic.TOPIC_COMMNET.value());
             messageVO.put("unread", unread);
 
             model.addAttribute("commentNotice", messageVO);
         }
 
         // 查询点赞类通知
-        message = messageService.findLatestNotice(user.getId(), TOPIC_LIKE);
+        message = messageService.findLatestNotice(user.getId(), BbKafkaTopic.TOPIC_LIKE.value());
         if (message != null) {
             Map<String, Object> messageVO = new HashMap<>();
 
@@ -246,17 +246,17 @@ public class MessageController implements BbConstant {
             messageVO.put("entityId", data.get("entityId"));
             messageVO.put("postId", data.get("postId"));
 
-            int count = messageService.findNoticeCount(user.getId(), TOPIC_LIKE);
+            int count = messageService.findNoticeCount(user.getId(), BbKafkaTopic.TOPIC_LIKE.value());
             messageVO.put("count", count);
 
-            int unread = messageService.findNoticeUnReadCount(user.getId(), TOPIC_LIKE);
+            int unread = messageService.findNoticeUnReadCount(user.getId(), BbKafkaTopic.TOPIC_LIKE.value());
             messageVO.put("unread", unread);
 
             model.addAttribute("likeNotice", messageVO);
         }
 
         // 查询关注类通知
-        message = messageService.findLatestNotice(user.getId(), TOPIC_FOLLOW);
+        message = messageService.findLatestNotice(user.getId(), BbKafkaTopic.TOPIC_FOLLOW.value());
         if (message != null) {
             Map<String, Object> messageVO = new HashMap<>();
 
@@ -269,10 +269,10 @@ public class MessageController implements BbConstant {
             messageVO.put("entityType", data.get("entityType"));
             messageVO.put("entityId", data.get("entityId"));
 
-            int count = messageService.findNoticeCount(user.getId(), TOPIC_FOLLOW);
+            int count = messageService.findNoticeCount(user.getId(), BbKafkaTopic.TOPIC_FOLLOW.value());
             messageVO.put("count", count);
 
-            int unread = messageService.findNoticeUnReadCount(user.getId(), TOPIC_FOLLOW);
+            int unread = messageService.findNoticeUnReadCount(user.getId(), BbKafkaTopic.TOPIC_FOLLOW.value());
             messageVO.put("unread", unread);
 
             model.addAttribute("followNotice", messageVO);

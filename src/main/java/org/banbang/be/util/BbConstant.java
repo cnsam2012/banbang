@@ -3,6 +3,7 @@ package org.banbang.be.util;
 /**
  * 常量
  */
+@Deprecated
 public interface BbConstant {
 
     // 激活成功

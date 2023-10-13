@@ -1,8 +1,8 @@
 package org.banbang.be.service;
 
 import org.banbang.be.pojo.User;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.RedisKeyUtil;
+import org.banbang.be.util.constant.BbEntityType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataAccessException;
 import org.springframework.data.redis.core.RedisOperations;
@@ -16,7 +16,7 @@ import java.util.*;
  * 关注相关
  */
 @Service
-public class FollowService implements BbConstant {
+public class FollowService {
 
     @Autowired
     private RedisTemplate redisTemplate;
@@ -120,7 +120,7 @@ public class FollowService implements BbConstant {
      * @return
      */
     public List<Map<String, Object>> findFollowees(int userId, int offset, int limit) {
-        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, ENTITY_TYPE_USER);
+        String followeeKey = RedisKeyUtil.getFolloweeKey(userId, BbEntityType.ENTITY_TYPE_USER.value());
         Set<Integer> targetIds = redisTemplate.opsForZSet().reverseRange(followeeKey, offset, offset + limit - 1);
         if (targetIds == null) {
             return null;
@@ -148,7 +148,7 @@ public class FollowService implements BbConstant {
      * @return
      */
     public List<Map<String, Object>> findFollowers(int userId, int offset, int limit) {
-        String followerKey = RedisKeyUtil.getFollowerKey(ENTITY_TYPE_USER, userId);
+        String followerKey = RedisKeyUtil.getFollowerKey(BbEntityType.ENTITY_TYPE_USER.value(), userId);
         Set<Integer> targetIds = redisTemplate.opsForZSet().reverseRange(followerKey, offset, offset + limit - 1);
         if (targetIds == null) {
             return null;

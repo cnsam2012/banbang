@@ -5,12 +5,12 @@ import org.banbang.be.pojo.DiscussPost;
 import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.service.*;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
 import com.qiniu.util.Auth;
 import com.qiniu.util.StringMap;
 import org.apache.commons.lang3.StringUtils;
+import org.banbang.be.util.constant.BbEntityType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ import java.util.*;
  */
 @Controller
 @RequestMapping("/user")
-public class UserController implements BbConstant {
+public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
@@ -172,15 +172,15 @@ public class UserController implements BbConstant {
         int userLikeCount = likeService.findUserLikeCount(userId);
         model.addAttribute("userLikeCount", userLikeCount);
         // 关注数量
-        long followeeCount = followService.findFolloweeCount(userId, ENTITY_TYPE_USER);
+        long followeeCount = followService.findFolloweeCount(userId, BbEntityType.ENTITY_TYPE_USER.value());
         model.addAttribute("followeeCount", followeeCount);
         // 粉丝数量
-        long followerCount = followService.findFollowerCount(ENTITY_TYPE_USER, userId);
+        long followerCount = followService.findFollowerCount(BbEntityType.ENTITY_TYPE_USER.value(), userId);
         model.addAttribute("followerCount", followerCount);
         // 当前登录用户是否已关注该用户
         boolean hasFollowed = false;
         if (hostHolder.getUser() != null) {
-            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+            hasFollowed = followService.hasFollowed(hostHolder.getUser().getId(), BbEntityType.ENTITY_TYPE_USER.value(), userId);
         }
         model.addAttribute("hasFollowed", hasFollowed);
         model.addAttribute("tab", "profile"); // 该字段用于指示标签栏高亮
@@ -220,7 +220,7 @@ public class UserController implements BbConstant {
             for (DiscussPost post : list) {
                 Map<String, Object> map = new HashMap<>();
                 map.put("post", post);
-                long likeCount = likeService.findEntityLikeCount(ENTITY_TYPE_POST, post.getId());
+                long likeCount = likeService.findEntityLikeCount(BbEntityType.ENTITY_TYPE_POST.value(), post.getId());
                 map.put("likeCount", likeCount);
 
                 discussPosts.add(map);
@@ -265,11 +265,11 @@ public class UserController implements BbConstant {
                 Map<String, Object> map = new HashMap<>();
                 map.put("comment", comment);
                 // 显示评论/回复对应的文章信息
-                if (comment.getEntityType() == ENTITY_TYPE_POST) {
+                if (comment.getEntityType() == BbEntityType.ENTITY_TYPE_POST.value()) {
                     // 如果是对帖子的评论，则直接查询 target_id 即可
                     DiscussPost post = discussPostService.findDiscussPostById(comment.getEntityId());
                     map.put("post", post);
-                } else if (comment.getEntityType() == ENTITY_TYPE_COMMENT) {
+                } else if (comment.getEntityType() == BbEntityType.ENTITY_TYPE_COMMENT.value()) {
                     // 如过是对评论的回复，则先根据该回复的 target_id 查询评论的 id, 再根据该评论的 target_id 查询帖子的 id
                     Comment targetComment = commentService.findCommentById(comment.getEntityId());
                     DiscussPost post = discussPostService.findDiscussPostById(targetComment.getEntityId());

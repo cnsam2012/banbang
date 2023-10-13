@@ -6,9 +6,10 @@ import org.banbang.be.pojo.User;
 import org.banbang.be.event.EventProducer;
 import org.banbang.be.service.FollowService;
 import org.banbang.be.service.UserService;
-import org.banbang.be.util.BbConstant;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
+import org.banbang.be.util.constant.BbEntityType;
+import org.banbang.be.util.constant.BbKafkaTopic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -31,7 +32,7 @@ import java.util.Map;
  * 关注(目前只做了关注用户)
  */
 @Controller
-public class FollowController implements BbConstant {
+public class FollowController {
 
     @Autowired
     private FollowService followService;
@@ -60,7 +61,7 @@ public class FollowController implements BbConstant {
 
         // 触发关注事件（系统通知）
         Event event = new Event()
-                .setTopic(TOPIC_FOLLOW)
+                .setTopic(BbKafkaTopic.TOPIC_FOLLOW.value())
                 .setUserId(hostHolder.getUser().getId())
                 .setEntityType(entityType)
                 .setEntityId(entityId)
@@ -103,7 +104,7 @@ public class FollowController implements BbConstant {
 
         page.setLimit(5);
         page.setPath("/followees/" + userId);
-        page.setRows((int) followService.findFolloweeCount(userId, ENTITY_TYPE_USER));
+        page.setRows((int) followService.findFolloweeCount(userId, BbEntityType.ENTITY_TYPE_USER.value()));
 
         // 获取关注列表
         List<Map<String, Object>> userList = followService.findFollowees(userId, page.getOffset(), page.getLimit());
@@ -137,7 +138,7 @@ public class FollowController implements BbConstant {
 
         page.setLimit(5);
         page.setPath("/followers/" + userId);
-        page.setRows((int) followService.findFollowerCount(ENTITY_TYPE_USER, userId));
+        page.setRows((int) followService.findFollowerCount(BbEntityType.ENTITY_TYPE_USER.value(), userId));
 
         // 获取关注列表
         List<Map<String, Object>> userList = followService.findFollowers(userId, page.getOffset(), page.getLimit());
@@ -164,7 +165,7 @@ public class FollowController implements BbConstant {
             return false;
         }
 
-        return followService.hasFollowed(hostHolder.getUser().getId(), ENTITY_TYPE_USER, userId);
+        return followService.hasFollowed(hostHolder.getUser().getId(), BbEntityType.ENTITY_TYPE_USER.value(), userId);
     }
 
 
