@@ -14,6 +14,13 @@ public interface UserMapper {
     User selectById (int id);
 
     /**
+     * 根据 WechatOpenId 查询用户信息
+     * @param wechatOpenId
+     * @return
+     */
+    User selectByWechatOpenId(String wechatOpenId);
+
+    /**
      * 根据 username 查询用户
      * @param username
      * @return
@@ -33,6 +40,13 @@ public interface UserMapper {
      * @return
      */
     int insertUser(User user);
+
+    /**
+     * 插入微信用户（注册）
+     * @param user
+     * @return
+     */
+    int insertWechatUser(User user);
 
     /**
      * 修改用户状态

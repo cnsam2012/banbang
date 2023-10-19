@@ -24,7 +24,7 @@ function publish() {
 			setTimeout(function(){
 				$("#hintModal").modal("hide");
 				// 操作完成后，跳转到首页
-				if (data.code == 0) {
+				if (data.code == 201) {
 					location.href = CONTEXT_PATH + "/index";
 				}
 			}, 2000);

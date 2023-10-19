@@ -19,7 +19,8 @@ public class LikeService {
 
     /**
      * 点赞
-     * @param userId 点赞的用户 id
+     *
+     * @param userId       点赞的用户 id
      * @param entityType
      * @param entityId
      * @param entityUserId 被赞的帖子/评论的作者 id
@@ -28,24 +29,21 @@ public class LikeService {
         redisTemplate.execute(new SessionCallback() {
             @Override
             public Object execute(RedisOperations redisOperations) throws DataAccessException {
+                // like:entity:(type):(id)
                 String entityLikeKey = RedisKeyUtil.getEntityLikeKey(entityType, entityId);
+                // like:user:id
                 String userLikeKey = RedisKeyUtil.getUserLikeKey(entityUserId);
-
                 // 判断用户是否已经点过赞了
                 boolean isMember = redisOperations.opsForSet().isMember(entityLikeKey, userId);
-
                 redisOperations.multi(); // 开启事务
-
                 if (isMember) {
                     // 如果用户已经点过赞，点第二次则取消赞
                     redisOperations.opsForSet().remove(entityLikeKey, userId);
                     redisOperations.opsForValue().decrement(userLikeKey);
-                }
-                else {
+                } else {
                     redisTemplate.opsForSet().add(entityLikeKey, userId);
                     redisOperations.opsForValue().increment(userLikeKey);
                 }
-
                 return redisOperations.exec(); // 提交事务
             }
         });
@@ -53,6 +51,7 @@ public class LikeService {
 
     /**
      * 查询某实体被点赞的数量
+     *
      * @param entityType
      * @param entityId
      * @return
@@ -64,6 +63,7 @@ public class LikeService {
 
     /**
      * 查询某个用户对某个实体的点赞状态（是否已赞）
+     *
      * @param userId
      * @param entityType
      * @param entityId
@@ -76,6 +76,7 @@ public class LikeService {
 
     /**
      * 查询某个用户获得赞数量
+     *
      * @param userId
      * @return
      */

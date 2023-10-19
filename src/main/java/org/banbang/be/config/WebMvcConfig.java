@@ -1,8 +1,9 @@
 package org.banbang.be.config;
 
-import org.banbang.be.ctrler.interceptor.DataInterceptor;
-import org.banbang.be.ctrler.interceptor.LoginTicketInterceptor;
-import org.banbang.be.ctrler.interceptor.MessageInterceptor;
+import org.banbang.be.controller.interceptor.CheckLoginInterceptor;
+import org.banbang.be.controller.interceptor.DataInterceptor;
+import org.banbang.be.controller.interceptor.LoginTicketInterceptor;
+import org.banbang.be.controller.interceptor.MessageInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -24,9 +25,30 @@ public class WebMvcConfig implements WebMvcConfigurer {
     @Autowired
     private DataInterceptor dataInterceptor;
 
+    @Autowired
+    private CheckLoginInterceptor checkLoginInterceptor;
+
     // 对除静态资源外所有路径进行拦截
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
+        registry.addInterceptor(checkLoginInterceptor)
+                .addPathPatterns("/api/user/setting",
+                        "/api/user/upload",
+                        "/api/discuss/add",
+                        "/api/discuss/publish",
+                        "/api/comment/add/**",
+                        "/api/letter/**",
+                        "/api/notice/**",
+                        "/api/like",
+                        "/api/follow",
+                        "/api/unfollow",
+                        "/api/discuss/delete",
+                        "/api/discuss/delete/",
+                        "/api/data/**",
+                        "/api/discuss/top",
+                        "/api/discuss/wonderful"
+                );
+
         registry.addInterceptor(loginTicketInterceptor)
                 .excludePathPatterns("/css/**", "/js/**", "/img/**", "/editor-md/**", "/editor-md-upload/**");
 
