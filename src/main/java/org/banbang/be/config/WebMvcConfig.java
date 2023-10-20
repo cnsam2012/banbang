@@ -67,10 +67,12 @@ public class WebMvcConfig implements WebMvcConfigurer {
         registry.addResourceHandler("/editor-md-upload/**").addResourceLocations("file:" + path);
 
         // **放行swagger，上线后取消
-        registry.addResourceHandler("swagger-ui.html")
-                .addResourceLocations("classpath:/META-INF/resources/");
+//        registry.addResourceHandler("swagger-ui.html")
+//                .addResourceLocations("classpath:/META-INF/resources/");
         registry.addResourceHandler("/webjars/**")
                 .addResourceLocations("classpath:/META-INF/resources/webjars/");
+        registry.addResourceHandler("doc.html")
+                .addResourceLocations("classpath:/META-INF/resources/");
         // **放行swagger拦截，上线后取消
     }
 

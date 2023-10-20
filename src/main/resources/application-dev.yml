@@ -118,3 +118,7 @@ wechat:
   applets:
     appid: wx7850d4bdeb683e5a
     secret: 71461445fa0f91c2204296f91758813c
+
+swagger:
+#  enable: false
+  enable: true

@@ -11,8 +11,8 @@ import lombok.Data;
 @Data
 @ApiModel("讨论标题、内容请求对象")
 public class DiscussPostTitleContentRo {
-    @ApiModelProperty("标题，非空")
+    @ApiModelProperty(value = "标题，非空", example = "not_null_title")
     private String title;
-    @ApiModelProperty("内容")
+    @ApiModelProperty(value = "内容", example = "content")
     private String content;
 }

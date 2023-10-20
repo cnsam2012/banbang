@@ -1,12 +1,14 @@
 package org.banbang.be.config;
 
+import com.github.xiaoymin.swaggerbootstrapui.annotations.EnableSwaggerBootstrapUI;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Profile;
 import springfox.documentation.builders.ApiInfoBuilder;
 import springfox.documentation.builders.PathSelectors;
 import springfox.documentation.builders.RequestHandlerSelectors;
 import springfox.documentation.service.ApiInfo;
-import springfox.documentation.service.ApiKey;
 import springfox.documentation.service.Contact;
 import springfox.documentation.spi.DocumentationType;
 import springfox.documentation.spring.web.plugins.Docket;
@@ -24,11 +26,18 @@ import java.util.List;
  */
 @Configuration
 @EnableSwagger2
+@EnableSwaggerBootstrapUI
+@Profile({"dev"})
 public class SwaggerConfig {
+
+    @Value("${swagger.enable}")
+    private boolean enable;
+
     @Bean
     public Docket createRestApi() {
         return new Docket(DocumentationType.SWAGGER_2)
                 .apiInfo(apiInfo())
+                .enable(enable)
                 .select()
                 .apis(RequestHandlerSelectors.basePackage("org.banbang.be"))
                 .paths(PathSelectors.any())
@@ -68,3 +77,5 @@ public class SwaggerConfig {
     }
 
 }
+
+
