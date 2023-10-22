@@ -52,7 +52,7 @@ public class FollowApiController {
      * @param resp
      * @return
      */
-    @PutMapping("/api/follow")
+    @PutMapping("api/follow")
     @ApiOperation("关注(目前只做了关注用户)")
     public R follow(
             @RequestBody
@@ -84,7 +84,7 @@ public class FollowApiController {
      * @param etir
      * @return
      */
-    @PutMapping("/api/unfollow")
+    @PutMapping("api/unfollow")
     @ApiOperation("取消关注(用户)")
     public R unfollow(
             @RequestBody
@@ -113,7 +113,7 @@ public class FollowApiController {
      * @param resp
      * @return
      */
-    @GetMapping("/api/followees/{userId}")
+    @GetMapping("api/followees/{userId}")
     @ApiOperation("某个用户的关注列表（人）")
     public R getFollowees(
             @PathVariable("userId")
@@ -158,7 +158,7 @@ public class FollowApiController {
      * @param resp
      * @return
      */
-    @GetMapping("/api/fans/{userId}")
+    @GetMapping("api/fans/{userId}")
     @ApiOperation("某个用户的粉丝列表")
     public R getFans(
             @PathVariable("userId") int userId,

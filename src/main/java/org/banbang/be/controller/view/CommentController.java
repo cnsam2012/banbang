@@ -25,7 +25,7 @@ import java.util.Date;
  */
 @Controller
 @ApiIgnore
-@RequestMapping("/comment")
+@RequestMapping("comment")
 public class CommentController {
 
     @Autowired
@@ -49,7 +49,7 @@ public class CommentController {
      * @param comment
      * @return
      */
-    @PostMapping("/add/{discussPostId}")
+    @PostMapping("add/{discussPostId}")
     public String addComment(@PathVariable("discussPostId") int discussPostId, Comment comment) {
 
         comment.setUserId(hostHolder.getUser().getId());
@@ -88,7 +88,7 @@ public class CommentController {
             redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
 
-        return "redirect:/discuss/detail/" + discussPostId;
+        return "redirect:discuss/detail/" + discussPostId;
     }
 
 }

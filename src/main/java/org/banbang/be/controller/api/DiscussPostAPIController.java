@@ -36,7 +36,7 @@ import java.util.*;
  */
 @RestController
 @Api(tags = "通知（讨论）API")
-@RequestMapping("/api/discuss")
+@RequestMapping("api/discuss")
 @Slf4j
 public class DiscussPostAPIController {
 
@@ -91,7 +91,7 @@ public class DiscussPostAPIController {
      * @param file
      * @return
      */
-    @PostMapping("/uploadMdPic")
+    @PostMapping("uploadMdPic")
     @ApiOperation("未完善！图片上传 (auth)")
     public String uploadMdPic(@RequestParam(value = "editormd-image-file", required = false) MultipartFile file) {
 
@@ -128,8 +128,8 @@ public class DiscussPostAPIController {
      * @param dpReceive
      * @return
      */
-    @RequestMapping(method = RequestMethod.POST, path = "/add")
     @ApiOperation(value = "添加讨论（发布通知） (auth)")
+    @RequestMapping(method = RequestMethod.POST, path = "add")
     public R addDiscussPost(
             @ApiParam(required = true)
             @RequestBody
@@ -185,7 +185,7 @@ public class DiscussPostAPIController {
      * @param resp
      * @return
      */
-    @GetMapping("/detail/all")
+    @GetMapping("detail/all")
     @ApiOperation("获取所有讨论")
     public R getAllDiscussPost(
             @RequestParam(name = "orderMode", defaultValue = "0")
@@ -241,7 +241,7 @@ public class DiscussPostAPIController {
      * @param page          分页信息
      * @return
      */
-    @GetMapping("/detail/{discussPostId}")
+    @GetMapping("detail/{discussPostId}")
     @ApiOperation("进入特定讨论详情页")
     public R getDiscussPost(
             @PathVariable("discussPostId")
@@ -342,7 +342,7 @@ public class DiscussPostAPIController {
      * @param idAndType
      * @return
      */
-    @PutMapping("/top")
+    @PutMapping("top")
     @ApiOperation("置顶讨论 (auth master-2 only)")
     public R updateTop(
             @ApiParam(required = true)
@@ -385,7 +385,7 @@ public class DiscussPostAPIController {
      * @param dpId
      * @return
      */
-    @PutMapping("/wonderful")
+    @PutMapping("wonderful")
     @ApiOperation("加精讨论 (auth master-2 only)")
     public R setWonderful(@ApiParam(required = true)
                           @RequestBody
@@ -426,7 +426,7 @@ public class DiscussPostAPIController {
      * @param resp
      * @return
      */
-    @DeleteMapping("/delete")
+    @DeleteMapping("delete")
     @ApiOperation("删除讨论 (auth admin-1 only)")
     public R setDelete(@ApiParam(required = true)
                        @RequestBody

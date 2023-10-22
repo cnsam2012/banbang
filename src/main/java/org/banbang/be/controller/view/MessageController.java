@@ -44,7 +44,7 @@ public class MessageController {
      * @param page
      * @return
      */
-    @GetMapping("/letter/list")
+    @GetMapping("letter/list")
     public String getLetterList(Model model, Page page) {
         // Integer.valueOf("abc"); // 测试统一异常处理（普通请求）
 
@@ -81,7 +81,7 @@ public class MessageController {
         int noticeUnreadCount = messageService.findNoticeUnReadCount(user.getId(), null);
         model.addAttribute("noticeUnreadCount", noticeUnreadCount);
 
-        return "/site/letter";
+        return "site/letter";
 
     }
 
@@ -92,7 +92,7 @@ public class MessageController {
      * @param model
      * @return
      */
-    @GetMapping("/letter/detail/{conversationId}")
+    @GetMapping("letter/detail/{conversationId}")
     public String getLetterDetail(@PathVariable("conversationId") String conversationId, Page page, Model model) {
         // 分页信息
         page.setLimit(5);
@@ -122,7 +122,7 @@ public class MessageController {
             messageService.readMessage(ids);
         }
 
-        return "/site/letter-detail";
+        return "site/letter-detail";
     }
 
     /**
@@ -169,7 +169,7 @@ public class MessageController {
      * @param content 内容
      * @return
      */
-    @PostMapping("/letter/send")
+    @PostMapping("letter/send")
     @ResponseBody
     public String sendLetter(String toName, String content) {
         // Integer.valueOf("abc"); // 测试统一异常处理（异步请求）
@@ -201,7 +201,7 @@ public class MessageController {
      * @param model
      * @return
      */
-    @GetMapping("/notice/list")
+    @GetMapping("notice/list")
     public String getNoticeList(Model model) {
         User user = hostHolder.getUser();
 
@@ -283,7 +283,7 @@ public class MessageController {
         int noticeUnreadCount = messageService.findNoticeUnReadCount(user.getId(), null);
         model.addAttribute("noticeUnreadCount", noticeUnreadCount);
 
-        return "/site/notice";
+        return "site/notice";
     }
 
     /**
@@ -293,7 +293,7 @@ public class MessageController {
      * @param model
      * @return
      */
-    @GetMapping("/notice/detail/{topic}")
+    @GetMapping("notice/detail/{topic}")
     public String getNoticeDetail(@PathVariable("topic") String topic, Page page, Model model) {
         User user = hostHolder.getUser();
 
@@ -329,6 +329,6 @@ public class MessageController {
             messageService.readMessage(ids);
         }
 
-        return "/site/notice-detail";
+        return "site/notice-detail";
     }
 }

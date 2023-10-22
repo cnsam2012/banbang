@@ -10,6 +10,7 @@ CREATE TABLE `discuss_post` (
   `create_time` timestamp NULL DEFAULT NULL,
   `comment_count` int(11) DEFAULT NULL,
   `score` double DEFAULT NULL,
+  `is_deleted` int(1) DEFAULT 0,
   PRIMARY KEY (`id`),
   KEY `index_user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -93,6 +93,13 @@
         where id = #{id}
     </update>
 
+    <!--修改用户名-->
+    <update id="updateUsername">
+        update user
+        set username = #{username}
+        where id = #{id}
+    </update>
+
     <!--修改密码-->
     <update id="updatePassword">
         update user

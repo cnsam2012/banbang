@@ -26,7 +26,7 @@ import java.util.Date;
  * 评论/回复
  */
 @RestController
-@RequestMapping("/api/comment")
+@RequestMapping("api/comment")
 @Api(tags = "评论/回复")
 public class CommentApiController {
 
@@ -52,7 +52,7 @@ public class CommentApiController {
      * @param comment
      * @return
      */
-    @PostMapping("/add/{discussPostId}")
+    @PostMapping("add/{discussPostId}")
     public R addComment(
             @PathVariable("discussPostId")
             int discussPostId,

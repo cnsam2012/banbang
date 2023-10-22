@@ -65,6 +65,14 @@ public interface UserMapper {
     int updateHeader(int id, String headerUrl);
 
     /**
+     * 修改用户名
+     * @param id
+     * @param username
+     * @return
+     */
+    int updateUsername(int id, String username);
+
+    /**
      * 修改密码
      * @param id
      * @param password 新密码

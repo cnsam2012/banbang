@@ -96,8 +96,10 @@ public class UserService {
      */
     public User findUserByName(String username) {
         User user = userMapper.selectByName(username);
-        user.setPassword("");
-        user.setSalt("");
+        if (ObjectUtil.isNotEmpty(user)) {
+            user.setPassword("");
+            user.setSalt("");
+        }
         return user;
     }
 
@@ -302,6 +304,18 @@ public class UserService {
         newPassword = BbUtil.md5(newPassword + user.getSalt());
         clearCache(userId);
         return userMapper.updatePassword(userId, newPassword);
+    }
+
+    /**
+     * 修改用户名
+     *
+     * @param userId
+     * @param newUsername
+     * @return
+     */
+    public int updateUsername(int userId, String newUsername) {
+        clearCache(userId);
+        return userMapper.updateUsername(userId, newUsername);
     }
 
     /**

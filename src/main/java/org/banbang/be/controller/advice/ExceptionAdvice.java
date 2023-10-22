@@ -32,7 +32,7 @@ public class ExceptionAdvice {
             // 异步请求（希望返回的是 JSON 数据）
             response.setContentType("application/plain;charset=utf-8");
             PrintWriter writer = response.getWriter();
-            writer.write(BbUtil.getJSONString(1, "服务器异常"));
+            writer.write(BbUtil.getJSONString(500, "服务器异常"));
         }
         else {
             // 普通请求（希望返回的是一个网页）

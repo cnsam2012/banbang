@@ -20,7 +20,7 @@ import java.util.HashMap;
 
 @Api(tags = "微信applet登录接口")
 @RestController
-@RequestMapping("/api/wechat")
+@RequestMapping("api/wechat")
 public class LoginWechatApiController {
     @Autowired
     private UserService userService;
@@ -41,7 +41,7 @@ public class LoginWechatApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/getUserInfoAndLogin")
+    @PostMapping("getUserInfoAndLogin")
     @ApiOperation("微信一键登录接口")
     public R getUserLoginByApplets(
             @RequestBody
@@ -75,7 +75,7 @@ public class LoginWechatApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/checkLoginStatus")
+    @PostMapping("checkLoginStatus")
     @ApiOperation("获取用户信息与登录状态")
     public R getUserInfoWithTicketByApplets(
             HttpServletRequest req,

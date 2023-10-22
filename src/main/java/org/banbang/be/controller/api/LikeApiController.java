@@ -51,7 +51,7 @@ public class LikeApiController {
      * @return
      */
     @ApiOperation("更改点赞状态，1:已赞，0:未赞，重复请求以取消/重新点赞")
-    @PostMapping("/api/like")
+    @PostMapping("api/like")
     @ResponseBody
     public R like(
             @RequestBody

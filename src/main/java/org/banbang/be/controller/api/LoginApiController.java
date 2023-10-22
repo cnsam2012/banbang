@@ -58,7 +58,7 @@ public class LoginApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/api/register")
+    @PostMapping("api/register")
     public R register(
             @RequestBody
             User user,
@@ -92,7 +92,7 @@ public class LoginApiController {
      *
      * @param response
      */
-    @GetMapping("/api/kaptcha")
+    @GetMapping("api/kaptcha")
     public void getKaptcha(
             HttpServletResponse response
     ) {
@@ -157,7 +157,7 @@ public class LoginApiController {
      * @param kaptchaOwner
      * @return
      */
-    @PostMapping("/api/login")
+    @PostMapping("api/login")
     public R login(
             @ApiParam(required = true)
             @RequestBody
@@ -222,7 +222,7 @@ public class LoginApiController {
      * @param ticket 设置凭证状态为无效
      * @return
      */
-    @GetMapping("/api/logout")
+    @GetMapping("api/logout")
     public R logout(
             @CookieValue("ticket") String ticket
     ) {
@@ -237,7 +237,7 @@ public class LoginApiController {
      * 重置密码
      * TODO 完善参数封装
      */
-    @PostMapping("/api/resetPwd")
+    @PostMapping("api/resetPwd")
     @ResponseBody
     public R resetPwd(@RequestParam("username") String username,
                       @RequestParam("password") String password,
@@ -294,7 +294,7 @@ public class LoginApiController {
      * @param kaptcha      用户输入的图片验证码
      * @param username     用户输入的需要找回的账号
      */
-    @PostMapping("/api/sendEmailCodeForResetPwd")
+    @PostMapping("api/sendEmailCodeForResetPwd")
     @ResponseBody
     public R sendEmailCodeForResetPwd(
             @CookieValue("kaptchaOwner") String kaptchaOwner,

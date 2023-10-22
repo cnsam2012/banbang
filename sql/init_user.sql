@@ -11,7 +11,7 @@ CREATE TABLE `user` (
   `activation_code` varchar(100) DEFAULT NULL,
   `header_url` varchar(200) DEFAULT NULL,
   `create_time` timestamp NULL DEFAULT NULL,
-  `wechat_open_id` varchar(100) default null
+  `wechat_open_id` varchar(100) null default null,
   PRIMARY KEY (`id`),
   KEY `index_username` (`username`(20)),
   KEY `index_email` (`email`(20))

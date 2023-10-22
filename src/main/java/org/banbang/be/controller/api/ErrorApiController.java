@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import javax.servlet.http.HttpServletResponse;
 
-@RestController("/api/_err0r")
+@RestController("api/_err0r")
 @Api("异常")
 public class ErrorApiController {
-    @GetMapping("/noLogin")
+    @GetMapping("noLogin")
     @ApiOperation("尚未登录")
     public R errorNoLogin(HttpServletResponse resp) {
         return R.error(resp, HttpStatus.SC_FORBIDDEN, "您尚未登录");

@@ -35,7 +35,7 @@ public class DataApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/api/data/uv")
+    @PostMapping("api/data/uv")
     @ApiOperation("统计网站 uv")
     public R getUV(
             @RequestBody
@@ -60,7 +60,7 @@ public class DataApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/api/data/dau")
+    @PostMapping("api/data/dau")
     @ApiOperation("统计网站 DAU")
     public R getDAU(
             @RequestBody

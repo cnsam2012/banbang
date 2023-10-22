@@ -33,7 +33,7 @@ import java.util.*;
 @Controller
 @ApiIgnore
 @Api(tags = "通知（讨论）页面")
-@RequestMapping("/discuss")
+@RequestMapping("discuss")
 public class DiscussPostController {
 
     @Autowired
@@ -74,10 +74,10 @@ public class DiscussPostController {
      *
      * @return
      */
-    @GetMapping("/publish")
+    @GetMapping("publish")
     @ApiOperation("进入讨论发布页")
     public String getPublishPage() {
-        return "/site/discuss-publish";
+        return "site/discuss-publish";
     }
 
     /**
@@ -86,7 +86,7 @@ public class DiscussPostController {
      * @param file
      * @return
      */
-    @PostMapping("/uploadMdPic")
+    @PostMapping("uploadMdPic")
     @ResponseBody
     @ApiOperation("图片上传")
     public String uploadMdPic(@RequestParam(value = "editormd-image-file", required = false) MultipartFile file) {
@@ -125,7 +125,7 @@ public class DiscussPostController {
      * @param content
      * @return
      */
-    @PostMapping("/add")
+    @PostMapping("add")
     @ResponseBody
     @ApiOperation("添加讨论（发布通知）")
     public String addDiscussPost(@NotEmpty(message = "文章标题不能为空") String title, String content) {
@@ -165,7 +165,7 @@ public class DiscussPostController {
      * @param model
      * @return
      */
-    @GetMapping("/detail/{discussPostId}")
+    @GetMapping("detail/{discussPostId}")
     @ApiOperation("进入讨论详情页")
     public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
         // 帖子
@@ -240,7 +240,7 @@ public class DiscussPostController {
 
         model.addAttribute("comments", commentVoList);
 
-        return "/site/discuss-detail";
+        return "site/discuss-detail";
 
     }
 
@@ -251,7 +251,7 @@ public class DiscussPostController {
      * @param id
      * @return
      */
-    @PostMapping("/top")
+    @PostMapping("top")
     @ResponseBody
     @ApiOperation("置顶讨论")
     public String updateTop(int id, int type) {
@@ -276,7 +276,7 @@ public class DiscussPostController {
      * @param id
      * @return
      */
-    @PostMapping("/wonderful")
+    @PostMapping("wonderful")
     @ResponseBody
     @ApiOperation("加精讨论")
     public String setWonderful(int id) {
@@ -305,7 +305,7 @@ public class DiscussPostController {
      * @param id
      * @return
      */
-    @PostMapping("/delete")
+    @PostMapping("delete")
     @ResponseBody
     @ApiOperation("删除讨论")
     public String setDelete(int id) {

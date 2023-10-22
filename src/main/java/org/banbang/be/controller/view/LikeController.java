@@ -46,7 +46,7 @@ public class LikeController {
      * @param postId 帖子的 id (点赞了哪个帖子，点赞的评论属于哪个帖子，点赞的回复属于哪个帖子)
      * @return
      */
-    @PostMapping("/like")
+    @PostMapping("like")
     @ResponseBody
     public String like(int entityType, int entityId, int entityUserId, int postId) {
         User user = hostHolder.getUser();

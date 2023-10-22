@@ -50,7 +50,7 @@ public class SearchApiController {
      * @return
      */
     @ApiOperation(value = "根据关键词搜索", httpMethod = "GET")
-    @GetMapping("/api/search")
+    @GetMapping("api/search")
     @ResponseBody
     public R search(
             @RequestParam("keyword")

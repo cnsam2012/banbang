@@ -15,6 +15,7 @@ import org.banbang.be.pojo.Page;
 import org.banbang.be.pojo.User;
 import org.banbang.be.pojo.ro.FileNameRo;
 import org.banbang.be.pojo.ro.OldNewPasswordRo;
+import org.banbang.be.pojo.ro.UsernameRo;
 import org.banbang.be.service.*;
 import org.banbang.be.util.BbUtil;
 import org.banbang.be.util.HostHolder;
@@ -83,7 +84,7 @@ public class UserApiController {
      * @param resp
      * @return
      */
-    @GetMapping("/setting")
+    @GetMapping("setting")
     @ApiOperation("账号设置信息")
     public R getSettingPage(
             HttpServletResponse resp
@@ -114,7 +115,7 @@ public class UserApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/header/url")
+    @PutMapping("header/url")
     @ApiOperation("还没好-更新图像路径（将本地的图像路径更新为云服务器上的图像路径）")
     public R updateHeaderUrl(
             @RequestBody
@@ -139,13 +140,16 @@ public class UserApiController {
 
     /**
      * 修改用户密码
+     *
      * @param onpr
      * @param resp
      * @return
      */
-    @PostMapping("/password")
+    @PutMapping("password")
     @ApiOperation("修改用户密码")
     public R updatePassword(
+            @RequestBody
+            @ApiParam(required = true)
             OldNewPasswordRo onpr,
             HttpServletResponse resp
     ) {
@@ -178,12 +182,52 @@ public class UserApiController {
     }
 
     /**
+     * 修改用户名
+     *
+     * @param ur
+     * @param resp
+     * @return
+     */
+    @PutMapping("username")
+    @ApiOperation("修改用户名")
+    public R updateUsername(
+            @RequestBody
+            @ApiParam(required = true)
+            UsernameRo ur,
+            HttpServletResponse resp
+    ) {
+        User user = hostHolder.getUser();
+        var oldName = user.getUsername();
+        var newName = ur.getUsername();
+        var data = new HashMap<String, Object>();
+
+        // 验证新旧用户名
+        if (StringUtils.equals(oldName, newName)) {
+            data.put("newUsernameError", "新旧用户名相同");
+            return R.error(resp, "非法用户名", data);
+        }
+
+        // 验证新用户名是否存在
+        var checkUser = userService.findUserByName(newName);
+        if (ObjectUtil.isNotEmpty(checkUser)) {
+            data.put("newUsernameError", "用户名已存在，请重新设置新用户名");
+            return R.error(resp, "非法用户名", data);
+        }
+
+        // 修改
+        userService.updateUsername(user.getId(), newName);
+
+        return R.ok(resp, "修改成功");
+    }
+
+    /**
      * 个人主页（个人数据）
+     *
      * @param userId
      * @param resp
      * @return
      */
-    @GetMapping("/profile/{userId}")
+    @GetMapping("profile/{userId}")
     @ApiOperation("个人主页（个人数据）")
     public R getProfilePage(
             @PathVariable("userId") int userId,
@@ -219,12 +263,13 @@ public class UserApiController {
 
     /**
      * 进入我的帖子（查询某个用户的帖子列表）
+     *
      * @param userId
      * @param page
      * @param resp
      * @return
      */
-    @GetMapping("/discuss/{userId}")
+    @GetMapping("discuss/{userId}")
     @ApiOperation("进入我的帖子（查询某个用户的帖子列表）")
     public R getMyDiscussPosts(
             @PathVariable("userId") int userId,
@@ -264,17 +309,18 @@ public class UserApiController {
         data.put("discussPosts", discussPosts);
         data.put("tab", "mypost"); // 该字段用于指示标签栏高亮
 
-        return R.ok(resp,"个人帖子列表", data);
+        return R.ok(resp, "个人帖子列表", data);
     }
 
     /**
      * 进入我的评论/回复（查询某个用户的评论/回复列表）
+     *
      * @param userId
      * @param page
      * @param resp
      * @return
      */
-    @GetMapping("/comment/{userId}")
+    @GetMapping("comment/{userId}")
     @ApiOperation("个人评论/回复列表")
     public R getMyComments(
             @PathVariable("userId") int userId,

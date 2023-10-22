@@ -86,18 +86,18 @@ public class LoginController {
      * @param user
      * @return
      */
-    @PostMapping("/register")
+    @PostMapping("register")
     public String register(Model model, User user) {
         Map<String, Object> map = userService.register(user);
         if (map == null || map.isEmpty()) {
             model.addAttribute("msg", "注册成功, 我们已经向您的邮箱发送了一封激活邮件，请尽快激活!");
             model.addAttribute("target", "/index");
-            return "/site/operate-result";
+            return "site/operate-result";
         } else {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
             model.addAttribute("emailMsg", map.get("emailMsg"));
-            return "/site/register";
+            return "site/register";
         }
     }
 
@@ -109,7 +109,7 @@ public class LoginController {
      * @param code   激活码
      * @return http://localhost:8080/echo/activation/用户id/激活码
      */
-    @GetMapping("/activation/{userId}/{code}")
+    @GetMapping("activation/{userId}/{code}")
     public String activation(Model model, @PathVariable("userId") int userId,
                              @PathVariable("code") String code) {
         int result = userService.activation(userId, code);
@@ -126,7 +126,7 @@ public class LoginController {
             model.addAttribute("msg", "激活失败, 未知异常!");
             model.addAttribute("target", "/index");
         }
-        return "/site/operate-result";
+        return "site/operate-result";
     }
 
 
@@ -135,7 +135,7 @@ public class LoginController {
      *
      * @param resp
      */
-    @GetMapping("/kaptcha")
+    @GetMapping("kaptcha")
     public void getKaptcha(HttpServletResponse resp) {
         // 生成验证码
         String text = kaptchaProducer.createText(); // 生成随机字符
@@ -199,7 +199,7 @@ public class LoginController {
      * @param response
      * @return
      */
-    @PostMapping("/login")
+    @PostMapping("login")
     public String login(
             @RequestParam("username")
             String username,
@@ -222,7 +222,7 @@ public class LoginController {
 
         if (StringUtils.isBlank(kaptcha) || StringUtils.isBlank(code) || !kaptcha.equalsIgnoreCase(code)) {
             model.addAttribute("codeMsg", "验证码错误");
-            return "/site/login";
+            return "site/login";
         }
 
         // 凭证过期时间（是否记住我）: 7天 & 12小时
@@ -239,11 +239,11 @@ public class LoginController {
             cookie.setPath(contextPath); // cookie 有效范围
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
-            return "redirect:/index";
+            return "redirect:index";
         } else {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
-            return "/site/login";
+            return "site/login";
         }
 
     }
@@ -254,17 +254,17 @@ public class LoginController {
      * @param ticket 设置凭证状态为无效
      * @return
      */
-    @GetMapping("/logout")
+    @GetMapping("logout")
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         SecurityContextHolder.clearContext();
-        return "redirect:/login";
+        return "redirect:login";
     }
 
     /**
      * 重置密码
      */
-    @PostMapping("/resetPwd")
+    @PostMapping("resetPwd")
     @ResponseBody
     public Map<String, Object> resetPwd(@RequestParam("username") String username,
                                         @RequestParam("password") String password,
@@ -303,7 +303,7 @@ public class LoginController {
      * @param kaptcha      用户输入的图片验证码
      * @param username     用户输入的需要找回的账号
      */
-    @PostMapping("/sendEmailCodeForResetPwd")
+    @PostMapping("sendEmailCodeForResetPwd")
     @ResponseBody
     public Map<String, Object> sendEmailCodeForResetPwd(Model model, @CookieValue("kaptchaOwner") String kaptchaOwner,
                                                         @RequestParam("kaptcha") String kaptcha,

@@ -47,7 +47,7 @@ public class FollowController {
      * @param entityId
      * @return
      */
-    @PostMapping("/follow")
+    @PostMapping("follow")
     @ResponseBody
     public String follow(int entityType, int entityId) {
         User user = hostHolder.getUser();
@@ -72,7 +72,7 @@ public class FollowController {
      * @param entityId
      * @return
      */
-    @PostMapping("/unfollow")
+    @PostMapping("unfollow")
     @ResponseBody
     public String unfollow(int entityType, int entityId) {
         User user = hostHolder.getUser();
@@ -89,7 +89,7 @@ public class FollowController {
      * @param model
      * @return
      */
-    @GetMapping("/followees/{userId}")
+    @GetMapping("followees/{userId}")
     public String getFollowees(@PathVariable("userId") int userId, Page page, Model model) {
         User user = userService.findUserById(userId);
         if (user == null) {
@@ -113,7 +113,7 @@ public class FollowController {
 
         model.addAttribute("users", userList);
 
-        return "/site/followee";
+        return "site/followee";
     }
 
     /**
@@ -123,7 +123,7 @@ public class FollowController {
      * @param model
      * @return
      */
-    @GetMapping("/followers/{userId}")
+    @GetMapping("followers/{userId}")
     public String getFollowers(@PathVariable("userId") int userId, Page page, Model model) {
         User user = userService.findUserById(userId);
         if (user == null) {
@@ -147,7 +147,7 @@ public class FollowController {
 
         model.addAttribute("users", userList);
 
-        return "/site/follower";
+        return "site/follower";
     }
 
     /**

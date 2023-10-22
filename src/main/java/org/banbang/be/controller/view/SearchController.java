@@ -38,7 +38,7 @@ public class SearchController {
      * @param model
      * @return
      */
-    @GetMapping("/search")
+    @GetMapping("search")
     public String search(String keyword, Page page, Model model) {
 
         // 搜索帖子 (Spring 提供的 Page 当前页码从 0 开始计数)
@@ -68,7 +68,7 @@ public class SearchController {
         page.setPath("/search?keyword="+ keyword);
         page.setRows(searchResult == null ? 0 : (int) searchResult.getTotalElements());
 
-        return "/site/search";
+        return "site/search";
     }
 
 

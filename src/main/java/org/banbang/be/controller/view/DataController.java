@@ -28,9 +28,9 @@ public class DataController {
      *
      * @return
      */
-    @RequestMapping(value = "/data", method = {RequestMethod.GET, RequestMethod.POST})
+    @RequestMapping(value = "data", method = {RequestMethod.GET, RequestMethod.POST})
     public String getDataPage() {
-        return "/site/admin/data";
+        return "site/admin/data";
     }
 
     /**
@@ -40,7 +40,7 @@ public class DataController {
      * @param end
      * @return
      */
-    @PostMapping("/data/uv")
+    @PostMapping("data/uv")
     public String getUV(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
                         @DateTimeFormat(pattern = "yyyy-MM-dd") Date end,
                         Model model) {
@@ -48,7 +48,7 @@ public class DataController {
         model.addAttribute("uvResult", uv);
         model.addAttribute("uvStartDate", start);
         model.addAttribute("uvEndDate", end);
-        return "forward:/data";
+        return "forward:data";
     }
 
     /**
@@ -58,7 +58,7 @@ public class DataController {
      * @param end
      * @return
      */
-    @PostMapping("/data/dau")
+    @PostMapping("data/dau")
     public String getDAU(@DateTimeFormat(pattern = "yyyy-MM-dd") Date start,
                          @DateTimeFormat(pattern = "yyyy-MM-dd") Date end,
                          Model model) {
@@ -66,7 +66,7 @@ public class DataController {
         model.addAttribute("dauResult", dau);
         model.addAttribute("dauStartDate", start);
         model.addAttribute("dauEndDate", end);
-        return "forward:/data";
+        return "forward:data";
     }
 
 }

@@ -27,7 +27,7 @@ import java.util.*;
  */
 @Controller
 @ApiIgnore
-@RequestMapping("/user")
+@RequestMapping("user")
 @Slf4j
 public class UserController {
 
@@ -75,7 +75,7 @@ public class UserController {
      *
      * @return
      */
-    @GetMapping("/setting")
+    @GetMapping("setting")
     public String getSettingPage(Model model) {
         // 生成上传文件的名称
         String fileName = BbUtil.generateUUID();
@@ -90,7 +90,7 @@ public class UserController {
         String uploadToken = auth.uploadToken(headerBucketName, fileName, 3600, policy);
         model.addAttribute("uploadToken", uploadToken);
 
-        return "/site/setting";
+        return "site/setting";
     }
 
     /**
@@ -99,7 +99,7 @@ public class UserController {
      * @param fileName
      * @return
      */
-    @PostMapping("/header/url")
+    @PostMapping("header/url")
     @ResponseBody
     public String updateHeaderUrl(String fileName) {
         if (StringUtils.isBlank(fileName)) {
@@ -122,7 +122,7 @@ public class UserController {
      * @param model
      * @return
      */
-    @PostMapping("/password")
+    @PostMapping("password")
     public String updatePassword(String oldPassword, String newPassword, Model model) {
         // 验证原密码是否正确
         User user = hostHolder.getUser();
@@ -131,20 +131,20 @@ public class UserController {
         // 注释此段暂时取消判断原密码、验证密码
         if (!user.getPassword().equals(md5OldPassword)) {
             model.addAttribute("oldPasswordError", "原密码错误");
-            return "/site/setting";
+            return "site/setting";
         }
 
         // 判断新密码是否合法
         String md5NewPassword = BbUtil.md5(newPassword + user.getSalt());
         if (user.getPassword().equals(md5NewPassword)) {
             model.addAttribute("newPasswordError", "新密码和原密码相同");
-            return "/site/setting";
+            return "site/setting";
         }
 
         // 修改用户密码
         userService.updatePassword(user.getId(), newPassword);
 
-        return "redirect:/index";
+        return "redirect:index";
     }
 
     /**
@@ -154,7 +154,7 @@ public class UserController {
      * @param model
      * @return
      */
-    @GetMapping("/profile/{userId}")
+    @GetMapping("profile/{userId}")
     public String getProfilePage(@PathVariable("userId") int userId, Model model) {
         User user = userService.findUserById(userId);
         if (user == null) {
@@ -180,7 +180,7 @@ public class UserController {
         model.addAttribute("hasFollowed", hasFollowed);
         model.addAttribute("tab", "profile"); // 该字段用于指示标签栏高亮
 
-        return "/site/profile";
+        return "site/profile";
     }
 
     /**
@@ -191,7 +191,7 @@ public class UserController {
      * @param model
      * @return
      */
-    @GetMapping("/discuss/{userId}")
+    @GetMapping("discuss/{userId}")
     public String getMyDiscussPosts(@PathVariable("userId") int userId, Page page, Model model) {
         User user = userService.findUserById(userId);
         if (user == null) {
@@ -224,7 +224,7 @@ public class UserController {
         model.addAttribute("discussPosts", discussPosts);
         model.addAttribute("tab", "mypost"); // 该字段用于指示标签栏高亮
 
-        return "/site/my-post";
+        return "site/my-post";
     }
 
     /**
@@ -235,7 +235,7 @@ public class UserController {
      * @param model
      * @return
      */
-    @GetMapping("/comment/{userId}")
+    @GetMapping("comment/{userId}")
     public String getMyComments(@PathVariable("userId") int userId, Page page, Model model) {
         User user = userService.findUserById(userId);
         if (user == null) {
@@ -277,7 +277,7 @@ public class UserController {
         model.addAttribute("comments", comments);
         model.addAttribute("tab", "myreply"); // 该字段用于指示标签栏高亮
 
-        return "/site/my-reply";
+        return "site/my-reply";
 
     }
 

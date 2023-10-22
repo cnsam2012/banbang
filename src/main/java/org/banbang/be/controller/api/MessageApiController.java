@@ -45,7 +45,7 @@ public class MessageApiController {
      * @param page
      * @return
      */
-    @GetMapping("/api/letter/list")
+    @GetMapping("api/letter/list")
     @ApiOperation("私信列表")
     public R getLetterList(
             @ApiParam(required = false)
@@ -106,7 +106,7 @@ public class MessageApiController {
      * @param page
      * @return
      */
-    @GetMapping("/api/letter/detail/{conversationId}")
+    @GetMapping("api/letter/detail/{conversationId}")
     @ApiOperation("私信详情")
     public R getLetterDetail(
             @PathVariable("conversationId")
@@ -199,7 +199,7 @@ public class MessageApiController {
      * @param resp
      * @return
      */
-    @PostMapping("/api/letter/send")
+    @PostMapping("api/letter/send")
     @ResponseBody
     @ApiOperation("发送私信")
     public R sendLetter(
@@ -242,7 +242,7 @@ public class MessageApiController {
      * @param resp
      * @return
      */
-    @GetMapping("/api/notice/list")
+    @GetMapping("api/notice/list")
     @ApiOperation("通知列表（只显示最新一条消息）")
     public R getNoticeList(HttpServletResponse resp) {
         var rdata = new HashMap<String, Object>();
@@ -345,7 +345,7 @@ public class MessageApiController {
      * @param resp
      * @return
      */
-    @GetMapping("/api/notice/detail/{topic}")
+    @GetMapping("api/notice/detail/{topic}")
     @ApiOperation("查询某个主题（关注follow/赞like/评论comment）所包含的通知列表")
     public R getNoticeDetail(@PathVariable("topic") String topic, Page page, HttpServletResponse resp) {
         var rdata = new HashMap<String, Object>();

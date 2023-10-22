@@ -39,7 +39,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String root() {
-        return "forward:/index";
+        return "forward:index";
     }
 
     /**
@@ -49,7 +49,7 @@ public class IndexController {
      * @param orderMode 默认是 0（最新）
      * @return
      */
-    @GetMapping("/index")
+    @GetMapping("index")
     public String getIndexPage(
             Model model,
             Page page,
@@ -91,18 +91,19 @@ public class IndexController {
      * 进入 500 错误界面
      * @return
      */
-    @GetMapping("/error")
+    @GetMapping("error")
     public String getErrorPage() {
-        return "/error/500";
+        return "error/500";
     }
+
 
     /**
      * 没有权限访问时的错误界面（也是 404）
      * @return
      */
-    @GetMapping("/denied")
+    @GetMapping("denied")
     public String getDeniedPage() {
-        return "/error/404";
+        return "error/404";
     }
 
 }
