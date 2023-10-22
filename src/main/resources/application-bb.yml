@@ -1,0 +1,125 @@
+server:
+  port: 5288
+  servlet:
+    context-path: /
+
+caffeine:
+  posts:
+    expire-seconds: 180
+    max-size: 15
+
+community:
+  path:
+    domain: http://localhost:8080
+    # Editor.Md upload path
+    editormdUploadPath: C:/Users/chang/Documents/Star/MyProject/Banbang/banbang-be/src/main/resources/static/editor-md-upload
+
+# Mybatis
+#mybatis.mapper-locations = classpath:mapper/*.xml
+#mybatis.type-aliases-package = org.banbang.be.pojo
+#mybatis.configuration.useGeneratedKeys = true
+#mybatis.configuration.mapUnderscoreToCamelCase = true
+
+# Mybatis-plus
+mybatis-plus:
+  configuration:
+    # Turn on SQL logging on
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+    mapUnderscoreToCamelCase: true
+    useGeneratedKeys: true
+  global-config:
+    db-config:
+      # set logic-delete
+      logic-delete-field: is_deleted
+      logic-delete-value: 1
+      logic-not-delete-value: 0
+  mapper-locations: classpath:mapper/*.xml
+  type-aliases-package: org.banbang.be.pojo
+
+qiniu:
+  bucket:
+    header:
+      name: banbang
+      url: http://s0mebygzu.hn-bkt.clouddn.com
+  key:
+    access: u5skkgjubSV1jFUJDCxcD56aLPbxFt0x5Nt9gFHl
+    secret: zwzJu9Adr0ggvLi8ad_6D1mLi_x-JRPuV2PbBubV
+
+spring:
+  data:
+    # Elasticsearch
+    # see ${ES_HOME}/elasticsearch.yml
+    # in docker container, the config path from /usr/share/elasticsearch/config/elasticsearch.yml
+    # TODO: elasticsearch.cluster-name does not effect in docker:/usr/share/elasticsearch/config/elasticsearch.yml
+    elasticsearch:
+      cluster-name: elasticsearch
+      #    cluster-name: community
+      cluster-nodes: ubd:9300
+
+  # MySQL
+  datasource:
+    # MySQL8
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # mysql5 if needed
+    #    driver-class-name: com.mysql.jdbc.Driver
+    password: Banbang.87654321
+    url: jdbc:mysql://ubd:3306/banbang_comm?characterEncoding=utf-8&useSSL=false&serverTimezone=Hongkong&allowPublicKeyRetrieval=true
+    username: bbc
+
+  # Kafka
+  kafka:
+    bootstrap-servers: ubd:9092
+    consumer:
+      auto-commit-interval: 3000
+      enable-auto-commit: true
+      group-id: test-consumer-group
+
+  # Spring Mail
+  mail:
+    default-encoding: UTF-8
+    host: smtp.163.com
+    # specpwd needed
+    password: MVYXGXCCFODXTENG
+    port: 465
+    properties:
+      mail:
+        smtp:
+          ssl:
+            enable: true
+    protocol: smtps
+    username: banbang88@163.com
+
+  quartz:
+    job-store-type: jdbc
+    properties:
+      org:
+        quartz:
+          jobStore:
+            class: org.quartz.impl.jdbcjobstore.JobStoreTX
+            driverDelegateClass: org.quartz.impl.jdbcjobstore.StdJDBCDelegate
+            isClustered: true
+          scheduler:
+            instanceId: AUTO
+          threadPool:
+            class: org.quartz.simpl.SimpleThreadPool
+            threadCount: 5
+    scheduler-name: communityScheduler
+
+  # Redis
+  redis:
+    database: 11
+    host: ubd
+    port: 6379
+    password: 1234
+
+  thymeleaf:
+    cache: false
+
+wechat:
+  applets:
+    appid: wx7850d4bdeb683e5a
+    secret: 71461445fa0f91c2204296f91758813c
+
+swagger:
+#  enable: false
+  enable: true
