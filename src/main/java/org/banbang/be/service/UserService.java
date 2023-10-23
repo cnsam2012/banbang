@@ -76,14 +76,29 @@ public class UserService {
      */
     public User findUserById(int id) {
         // return userMapper.selectById(id);
-
         User user = getCache(id); // 优先从缓存中查询数据
         if (user == null) {
             user = initCache(id);
         }
+        if (ObjectUtil.isNotEmpty(user)) {
+            user.setPassword("");
+            user.setSalt("");
+        }
+        return user;
+    }
 
-        user.setPassword("");
-        user.setSalt("");
+    /**
+     * 根据 Id 查询用户，返回密码与盐值
+     *
+     * @param id
+     * @return
+     */
+    public User findUserByIdReturnPwd(int id) {
+        // return userMapper.selectById(id);
+        User user = getCache(id); // 优先从缓存中查询数据
+        if (user == null) {
+            user = initCache(id);
+        }
         return user;
     }
 
@@ -163,7 +178,7 @@ public class UserService {
         // http://localhost:8080/echo/activation/用户id/激活码
         String url = domain + (contextPath.equals("/") ? "" : contextPath) + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
-        String content = templateEngine.process("/mail/activation", context);
+        String content = templateEngine.process("mail/activation", context);
         mailClient.sendMail(user.getEmail(), "激活 班帮(Banbang) 账号", content);
 
         return map;
@@ -405,7 +420,7 @@ public class UserService {
         // http://localhost:8080/echo/activation/用户id/激活码
         String url = domain + (contextPath.equals("/") ? "" : contextPath) + "/activation/" + user.getId() + "/" + user.getActivationCode();
         context.setVariable("url", url);
-        String content = templateEngine.process("/mail/activation", context);
+        String content = templateEngine.process("mail/activation", context);
         mailClient.sendMail(email, "重置 Echo 账号密码", content);
 
         final String redisKey = "EmailCode4ResetPwd:" + account;

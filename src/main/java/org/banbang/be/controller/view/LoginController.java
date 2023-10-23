@@ -56,7 +56,7 @@ public class LoginController {
      *
      * @return
      */
-    @GetMapping("/register")
+    @GetMapping("register")
     public String getRegisterPage() {
         return "site/register";
     }
@@ -66,7 +66,7 @@ public class LoginController {
      *
      * @return
      */
-    @GetMapping("/login")
+    @GetMapping("login")
     public String getLoginPage() {
         return "site/login";
     }
@@ -74,7 +74,7 @@ public class LoginController {
     /**
      * 进入重置密码界面
      */
-    @GetMapping("/resetPwd")
+    @GetMapping("resetPwd")
     public String getResetPwdPage() {
         return "site/reset-pwd";
     }

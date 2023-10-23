@@ -126,6 +126,7 @@ public class UserController {
     public String updatePassword(String oldPassword, String newPassword, Model model) {
         // 验证原密码是否正确
         User user = hostHolder.getUser();
+        user = userService.findUserByIdReturnPwd(user.getId());
         String md5OldPassword = BbUtil.md5(oldPassword + user.getSalt());
 
         // 注释此段暂时取消判断原密码、验证密码
@@ -144,7 +145,7 @@ public class UserController {
         // 修改用户密码
         userService.updatePassword(user.getId(), newPassword);
 
-        return "redirect:index";
+        return "redirect:/index";
     }
 
     /**

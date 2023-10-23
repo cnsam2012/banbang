@@ -1,0 +1,277 @@
+<!-- 引入样式文件 -->
+<link
+  rel="stylesheet"
+  href="https://unpkg.com/vant@2.12/lib/index.css"
+/>
+
+<!-- 引入 Vue 和 Vant 的 JS 文件 -->
+<script src="https://unpkg.com/vue@2.6/dist/vue.min.js"></script>
+<script src="https://unpkg.com/vant@2.12/lib/vant.min.js"></script>
+
+
+<div id="chat">
+    <div class="chatBox">
+        <div class="chatBox-top">
+            <div class="chatBox-top-imgBox">
+                <van-image round width="2.5rem" height="2.5rem" src="https://img01.yzcdn.cn/vant/cat.jpeg" />
+            </div>
+            <div class="chatBox-top-text"><span>小巴客服正在为您服务</span></div>
+        </div>
+        <div class="chatBox-middle">
+            <div class="chatInfo" id="chatInfo">
+                <div class="chatUser-box" v-for="(item,index) in infoList"  :key="index" :class="[current==item.id?'chatUser-box1':'chatUser-box']">
+                    <div class="chatUser-box-img">
+                        <van-image round width="2.5rem" height="2.5rem"
+                            :src="item.images" />
+                    </div>
+                    <div class="chatUser-info">
+                        <div class="chatUser-info-name" :class="[current==item.id?'chatUser-info-name1':'chatUser-info-name']"><span>{{item.name}}</span><span class="nowDate">{{item.time}}</span>
+                        </div>
+                        <div class="chatUser-info-text" :class="[current==item.id?'chatUser-info-text1':'chatUser-info-text']">
+                            <span>{{item.message}}</span>
+                        </div>
+                    </div>
+                </div>
+                
+            </div>
+        </div>
+        <div class="chatBox-infoDesk">
+            <div class="chatBox-textarea">
+                <van-field v-model="messages" rows="4" type="textarea" placeholder="请输入咨询信息" />
+            </div>
+            <div class="chatBox-sendOut">
+                <van-button class="sendOut" type="primary" @click="getSends">客户</van-button>
+                <van-button class="sendOut" type="primary" @click="getSend">用户</van-button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<script>
+    var infoData = [
+    {
+        id:1,
+        name:'小巴',
+        time:'2021-4-23 17:59:50 星期五',
+        images:'https://img01.yzcdn.cn/vant/cat.jpeg',
+        message:'您好！'
+    },
+    {
+        id:3,
+        name:'商客',
+        time:'2021-4-23 18:00:24 星期五',
+        images:'https://img01.yzcdn.cn/vant/cat.jpeg',
+        message:'请问又是什么需要帮助的吗？'
+    },
+    {
+        id:2,
+        name:'发哥',
+        time:'2021-4-23 18:00:05 星期五',
+        images:'https://img01.yzcdn.cn/vant/leaf.jpg',
+        message:'咨询信息'
+    },
+]
+new Vue({
+    el: '#chat',
+    data() {
+        return {
+            messages: '',
+            nowDate: "", // 当前日期
+            current:2,
+            infoList:infoData
+        }
+    },
+    mounted() {
+        this.formatDate();
+        this.scrollToBottom()
+    },
+    updated() {
+        this.scrollToBottom()
+    },
+    methods: {
+        getSend(){
+            if(this.messages == ''){
+                vant.Toast('请输入咨询信息')
+                return
+            }
+            let userData = {
+                id:2,
+                name:'发哥',
+                time:this.nowDate,
+                images:'https://img01.yzcdn.cn/vant/leaf.jpg',
+                message:this.messages
+            }
+            infoData.push(userData)
+            this.messages = ''
+        },
+        getSends(){
+            if(this.messages == ''){
+                vant.Toast('请输入咨询信息')
+                return
+            }
+            let customerData = {
+                id:4,
+                name:'小巴',
+                time:this.nowDate,
+                images:'https://img01.yzcdn.cn/vant/cat.jpeg',
+                message:this.messages
+            }
+            infoData.push(customerData)
+            this.messages = ''
+        },
+        scrollToBottom(){
+            this.$nextTick(()=>{
+                let container  = this.$el.querySelector("#chatInfo");
+                container.scrollTop = container.scrollHeight;
+            })
+        },
+        formatDate() {//当前时间 2021-4-23 18:00:24 星期五
+            let date = new Date();
+            let year = date.getFullYear(); // 年
+            let month = date.getMonth() + 1; // 月
+            let day = date.getDate(); // 日
+            let week = date.getDay(); // 星期
+            let weekArr = ["星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六"];
+            let hour = date.getHours(); // 时
+            hour = hour < 10 ? "0" + hour : hour; // 如果只有一位，则前面补零
+            let minute = date.getMinutes(); // 分
+            minute = minute < 10 ? "0" + minute : minute; // 如果只有一位，则前面补零
+            let second = date.getSeconds(); // 秒
+            second = second < 10 ? "0" + second : second; // 如果只有一位，则前面补零
+            this.nowDate = `${year}-${month}-${day} ${hour}:${minute}:${second} ${weekArr[week]}`;
+        }
+    }
+})
+</script>
+
+<style>
+    html,
+		body {
+			background-color: #E8E8E8;
+		}
+ 
+		#chat .chatBox {
+			width: 60rem;
+			height: auto;
+			margin: 2.5rem auto 0;
+			background-color: #fff;
+			overflow: hidden;
+			border-radius: 0.625rem;
+		}
+ 
+		#chat .chatBox-top {
+			width: 100%;
+			height: 3.75rem;
+			display: flex;
+			flex-wrap: nowrap;
+			align-items: center;
+			background-color: #2B3D63;
+		}
+ 
+		#chat .chatBox-top-imgBox {
+			margin-left: 1.25rem;
+		}
+ 
+		#chat .chatBox-top-text {
+			margin-left: 1.25rem;
+			font-size: 1rem;
+			color: #fff;
+		}
+ 
+		#chat .chatBox-middle {
+			width: 100%;
+			height: 31.25rem;
+			background-color: #fff;
+			border-bottom: 0.0625rem solid #2B3D63;
+		}
+ 
+		#chat .chatBox-middle {
+			width: 100%;
+			height: 31.25rem;
+			background-color: #fff;
+		}
+ 
+		#chat .chatBox-infoDesk {
+			width: 100%;
+			height: 10rem;
+		}
+ 
+		#chat .chatBox-textarea {
+			width: 100%;
+			height: 6.25rem;
+		}
+ 
+		#chat .chatBox-sendOut {
+			margin-top: 0.625rem;
+			width: 100%;
+			height: 3.125rem;
+			text-align: right;
+		}
+ 
+		#chat .sendOut {
+			padding: 0 1.25rem;
+			height: 2.1875rem;
+			margin: 0.3125rem 1.25rem 0 0;
+		}
+ 
+		#chat .chatInfo {
+			width: 94%;
+			height: 94%;
+			margin: 1.25rem auto;
+			overflow: auto;
+		}
+ 
+		#chat .chatUser-box {
+			width: 100%;
+			margin-bottom: 6px;
+			display: flex;
+			flex-direction: row;
+		}
+		
+		
+		#chat .chatUser-box-img {
+			display: flex;
+		}
+ 
+		#chat .chatUser-info {
+			margin: 0 1.25rem;
+		}
+ 
+		#chat .chatUser-info-name {
+			font-size: 0.875rem;
+			color: #888;
+			display: flex;
+			flex-direction: row;
+		}
+ 
+		#chat .nowDate {
+			margin: 0 0.625rem;
+		}
+ 
+		#chat .chatUser-info-text {
+			margin-top: 0.3125rem;
+			max-width: 20rem;
+			padding: 0.5rem;
+			background-color: #E8E8E8;
+			border-radius: 0.5rem;
+			float: left;
+			table-layout:fixed;
+			word-break: break-all;
+			overflow:hidden;
+		}
+ 
+		#chat .chatUser-info-text span{
+			font-size: 0.9375rem;
+			line-height: 1.5625rem;
+		}
+		#chat .chatUser-box1 {
+			flex-direction: row-reverse;
+		}
+		#chat .chatUser-info-name1 {
+			flex-direction: row-reverse;
+		}
+		#chat .chatUser-info-text1 {
+			float: right;
+		}
+</style>

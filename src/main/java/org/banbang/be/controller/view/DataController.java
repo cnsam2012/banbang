@@ -48,7 +48,7 @@ public class DataController {
         model.addAttribute("uvResult", uv);
         model.addAttribute("uvStartDate", start);
         model.addAttribute("uvEndDate", end);
-        return "forward:data";
+        return "forward:/data";
     }
 
     /**
@@ -66,7 +66,7 @@ public class DataController {
         model.addAttribute("dauResult", dau);
         model.addAttribute("dauStartDate", start);
         model.addAttribute("dauEndDate", end);
-        return "forward:data";
+        return "forward:/data";
     }
 
 }

@@ -38,7 +38,7 @@ import java.util.*;
 @Api(tags = "通知（讨论）API")
 @RequestMapping("api/discuss")
 @Slf4j
-public class DiscussPostAPIController {
+public class DiscussPostApiController {
 
     @Autowired
     private DiscussPostService discussPostService;

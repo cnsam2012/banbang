@@ -1,5 +1,6 @@
 package org.banbang.be.controller.view;
 
+import cn.hutool.core.util.ObjectUtil;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.banbang.be.pojo.*;
@@ -167,7 +168,11 @@ public class DiscussPostController {
      */
     @GetMapping("detail/{discussPostId}")
     @ApiOperation("进入讨论详情页")
-    public String getDiscussPost(@PathVariable("discussPostId") int discussPostId, Model model, Page page) {
+    public String getDiscussPost(
+            @PathVariable("discussPostId") int discussPostId,
+            Model model,
+            Page page
+    ) {
         // 帖子
         DiscussPost discussPost = discussPostService.findDiscussPostById(discussPostId);
         String content = HtmlUtils.htmlUnescape(discussPost.getContent()); // 内容反转义，不然 markDown 格式无法显示
@@ -185,7 +190,9 @@ public class DiscussPostController {
         model.addAttribute("likeStatus", likeStatus);
 
         // 评论分页信息
-        page.setLimit(5);
+        if (page.getLimit() == 0 || ObjectUtil.isEmpty(page.getLimit())) {
+            page.setLimit(5);
+        }
         page.setPath("/discuss/detail/" + discussPostId);
         page.setRows(discussPost.getCommentCount());
 

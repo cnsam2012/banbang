@@ -20,7 +20,7 @@
 			<div class="container">
 				<!-- 选项 -->
 				<div class="position-relative">
-					<ul class="nav nav-tabs" th:replace="/site/profile::profiletab"></ul>
+					<ul class="nav nav-tabs" th:replace="site/profile::profiletab"></ul>
 					<a th:href="@{|/user/profile/${user.id}|}" class="text-muted position-absolute rt-0">返回个人主页&gt;</a>
 				</div>
 				<!-- 我的回复 -->

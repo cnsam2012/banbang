@@ -88,7 +88,7 @@ public class CommentController {
             redisTemplate.opsForSet().add(redisKey, discussPostId);
         }
 
-        return "redirect:discuss/detail/" + discussPostId;
+        return "redirect:/discuss/detail/" + discussPostId;
     }
 
 }
