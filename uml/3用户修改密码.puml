@@ -1,0 +1,30 @@
+@startuml
+participant Actor
+Actor -> UserApiController : 修改密码
+activate UserApiController
+UserApiController -> UserService : 修改密码
+activate UserService
+UserService -> UserMapper : 获取用户信息
+activate UserMapper
+UserMapper --> UserService
+deactivate UserMapper
+UserService -> BbUtil : 校验原密码是否正确
+activate BbUtil
+BbUtil --> UserService
+deactivate BbUtil
+UserService -> UserService : 清除缓存
+activate UserService
+UserService -> RedisKeyUtil : 根据用户ID清除Redis缓存
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+UserService --> UserService
+deactivate UserService
+UserService -> UserMapper : 将新密码加密存入数据库（Mysql持久化）
+activate UserMapper
+UserMapper --> UserService
+deactivate UserMapper
+UserService --> UserApiController
+deactivate UserService
+return
+@enduml

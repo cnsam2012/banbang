@@ -51,7 +51,7 @@ function updateTop() {
     //     }
     // })
 
-    $.put(
+    $.post(
         CONTEXT_PATH + "/discuss/top",
         {
             "id": $("#postId").val(),
@@ -96,14 +96,14 @@ function setWonderful() {
     // })
 
 
-    $.put(
+    $.post(
         CONTEXT_PATH + "/discuss/wonderful",
         {"id": $("#postId").val()},
         function (data) {
             data = $.parseJSON(data);
             if (data.code == 0) {
                 // 加精成功后，将加精按钮设置为不可用
-                $("#wonderfulBtn").attr("disabled", "disable")
+                $("#wonderfulBtn").attr("disabled", "disable");
             } else {
                 alert(data.msg);
             }

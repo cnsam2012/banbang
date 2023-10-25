@@ -1,0 +1,14 @@
+@startuml
+participant 搜索
+搜索 -> SearchApiController : 搜索信息
+activate SearchApiController
+SearchApiController -> ElasticsearchService : 在ElasticSearch中被分词，并被搜索
+activate ElasticsearchService
+ElasticsearchService --> SearchApiController
+deactivate ElasticsearchService
+SearchApiController -> UserService : 封装用户信息
+activate UserService
+UserService --> SearchApiController
+deactivate UserService
+return
+@enduml

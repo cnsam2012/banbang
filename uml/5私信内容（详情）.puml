@@ -1,0 +1,22 @@
+@startuml
+participant 获取私信内容
+获取私信内容 -> MessageApiController : 获取请求
+activate MessageApiController
+MessageApiController -> MessageService : 查询私信数量
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+MessageApiController -> MessageService : 查询具体私信内容
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+MessageApiController -> UserService : 查询用户信息
+activate UserService
+UserService --> MessageApiController
+deactivate UserService
+MessageApiController -> MessageService : 更改私信状态（已读、未读）
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+return
+@enduml

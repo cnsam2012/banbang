@@ -1,0 +1,23 @@
+@startuml
+participant 关注列表
+关注列表 -> FollowApiController : 获取关注列表
+activate FollowApiController
+FollowApiController -> BbEntityType : 查询实体类型（讨论、评论、人）
+activate BbEntityType
+BbEntityType --> FollowApiController
+deactivate BbEntityType
+FollowApiController -> FollowService : 计算关注数
+activate FollowService
+FollowService --> FollowApiController
+deactivate FollowService
+FollowApiController -> FollowService : 整合关注列表
+activate FollowService
+deactivate BbEntityType
+FollowService -> UserService : 根据关注列表，整合用户信息
+activate UserService
+UserService --> FollowService
+deactivate UserService
+FollowService --> FollowApiController
+deactivate FollowService
+return
+@enduml

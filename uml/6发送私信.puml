@@ -1,0 +1,26 @@
+@startuml
+participant 发送私信
+发送私信 -> MessageApiController : 私信内容
+activate MessageApiController
+MessageApiController -> UserService : 查询接受人
+activate UserService
+UserService --> MessageApiController
+deactivate UserService
+MessageApiController -> MessageService : 私信内容
+activate MessageService
+MessageService -> SensitiveFilter : 敏感词过滤器
+activate SensitiveFilter
+SensitiveFilter -> SensitiveFilter : 过滤敏感词
+activate SensitiveFilter
+SensitiveFilter --> SensitiveFilter
+deactivate SensitiveFilter
+SensitiveFilter --> MessageService
+deactivate SensitiveFilter
+MessageService -> MessageMapper : 添加信息到数据库
+activate MessageMapper
+MessageMapper --> MessageService
+deactivate MessageMapper
+MessageService --> MessageApiController
+deactivate MessageService
+return
+@enduml

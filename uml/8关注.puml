@@ -1,0 +1,14 @@
+@startuml
+participant 关注
+关注 -> FollowApiController : 关注信息
+activate FollowApiController
+FollowApiController -> FollowService : 存入Redis zset中
+activate FollowService
+FollowService --> FollowApiController
+deactivate FollowService
+FollowApiController -> EventProducer : 提交Kafka事件，（自动消费并）计算被赞帖子的分数
+activate EventProducer
+EventProducer --> FollowApiController
+deactivate EventProducer
+return
+@enduml

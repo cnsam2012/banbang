@@ -1,0 +1,18 @@
+@startuml
+participant 私信列表
+私信列表 -> MessageApiController : 私信列表请求
+activate MessageApiController
+MessageApiController -> MessageService : 根据会话ID（FrID_ToID）查询私信
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+MessageApiController -> UserService : 获取用户信息
+activate UserService
+UserService --> MessageApiController
+deactivate UserService
+MessageApiController -> MessageService : 获取用户未读信息数
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+return
+@enduml

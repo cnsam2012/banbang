@@ -1,0 +1,15 @@
+@startuml
+participant 点赞
+点赞 -> FollowApiController : 点赞信息
+activate FollowApiController
+FollowApiController -> FollowService : 改变点赞状态
+activate FollowService
+FollowService --> FollowApiController
+deactivate FollowService
+create Event
+FollowApiController -> Event : 提交Kafka事件，（自动消费并）计算被赞帖子的分数
+activate Event
+Event --> FollowApiController
+deactivate Event
+return
+@enduml

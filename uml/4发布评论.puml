@@ -1,0 +1,26 @@
+@startuml
+participant 发布评论
+发布评论 -> CommentApiController : 新评论
+activate CommentApiController
+CommentApiController -> CommentService : 新评论
+activate CommentService
+CommentService -> SensitiveFilter : 敏感词过滤器
+activate SensitiveFilter
+SensitiveFilter -> SensitiveFilter : 分词并检查敏感词
+activate SensitiveFilter
+SensitiveFilter --> SensitiveFilter
+deactivate SensitiveFilter
+SensitiveFilter --> CommentService
+deactivate SensitiveFilter
+CommentService -> CommentMapper : 将评论存入数据库
+activate CommentMapper
+CommentMapper --> CommentService
+deactivate CommentMapper
+CommentService -> DiscussPostService : 更新讨论（帖子）的评论数
+activate DiscussPostService
+DiscussPostService --> CommentService
+deactivate DiscussPostService
+CommentService --> CommentApiController
+deactivate CommentService
+return
+@enduml

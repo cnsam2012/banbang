@@ -1,0 +1,38 @@
+@startuml
+participant 显示所有讨论
+显示所有讨论 -> DiscussPostApiController : 获取所有讨论
+activate DiscussPostApiController
+DiscussPostApiController -> DiscussPostService : 获取分页信息
+activate DiscussPostService
+DiscussPostService -> DiscussPostMapper : 根据分页信息，计算分页讨论
+activate DiscussPostMapper
+DiscussPostMapper --> DiscussPostService
+deactivate DiscussPostMapper
+DiscussPostService --> DiscussPostApiController
+deactivate DiscussPostService
+DiscussPostApiController -> DiscussPostService : 获取讨论
+activate DiscussPostService
+DiscussPostService -> DiscussPostMapper : 从Mysql中获取所有讨论
+activate DiscussPostMapper
+DiscussPostMapper --> DiscussPostService
+deactivate DiscussPostMapper
+DiscussPostService --> DiscussPostApiController
+deactivate DiscussPostService
+
+DiscussPostApiController -> LikeService : 根据特定讨论查询点赞次数
+activate LikeService
+
+LikeService -> RedisKeyUtil : 从Redis缓存中查询
+activate RedisKeyUtil
+RedisKeyUtil --> LikeService
+deactivate RedisKeyUtil
+LikeService --> DiscussPostApiController
+
+deactivate LikeService
+DiscussPostApiController -> R : ok
+activate R
+R --> DiscussPostApiController
+DiscussPostApiController --> 显示所有讨论
+deactivate R
+
+@enduml

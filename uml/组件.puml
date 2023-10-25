@@ -1,0 +1,34 @@
+@startuml
+'https://plantuml.com/component-diagram
+
+
+package "模块" {
+[注册] --> [SpringMail]
+[评论] --> [敏感词过滤]
+[帖子] --> [敏感词过滤]
+[私信] --> [敏感词过滤]
+[用户TOKEN/用户状态] --> [ServletFilter]
+[统一异常处理] --> [Advice]
+[统一日志记录] --> [Aop]
+[更新帖子热度] --> [SpringQuzrtz]
+[更新帖子热度] --> [RedisSet]
+[系统通知] --> [Kafka]
+[全文搜索] --> [Kafka]
+[全文搜索] --> [ElasticSearch]
+}
+  package "DAO层" {
+    database Mysql
+    database Redis
+    cloud "七牛云"
+  }
+  package "Spring框架" {
+  [Springboot] --> "七牛云"
+  [SpringMVC]
+  [Spring]--> Mysql
+  [Spring]--> Redis
+  [SpringSecurity]
+  }
+
+模块 --> "Spring框架"
+
+@enduml

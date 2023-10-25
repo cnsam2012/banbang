@@ -1,0 +1,20 @@
+@startuml
+participant 热度计算
+热度计算 -> PostScoreRefreshJob : 热度计算
+activate PostScoreRefreshJob
+activate PostScoreRefreshJob
+PostScoreRefreshJob -> DiscussPostService : 查找帖子
+activate DiscussPostService
+DiscussPostService --> PostScoreRefreshJob
+deactivate DiscussPostService
+deactivate BbEntityType
+PostScoreRefreshJob -> LikeService : 查找帖子点赞数
+activate LikeService
+LikeService --> PostScoreRefreshJob
+deactivate LikeService
+PostScoreRefreshJob -> DiscussPostService : 计算分数
+DiscussPostService --> PostScoreRefreshJob
+deactivate DiscussPostService
+PostScoreRefreshJob -> ElasticsearchService : 更新ElasticSearch中的数据
+return
+@enduml

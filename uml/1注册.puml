@@ -1,0 +1,17 @@
+@startuml
+participant 新用户
+新用户 -> LoginApiController : 注册
+activate LoginApiController
+LoginApiController -> UserService : 注册
+UserService -> UserMapper : 用户数据持久化
+activate UserMapper
+UserMapper --> UserService
+deactivate UserMapper
+UserService -> MailClient : sendMail（发送包含激活码的注册邮件）
+activate MailClient
+MailClient --> UserService
+deactivate MailClient
+UserService --> LoginApiController
+deactivate UserService
+return
+@enduml

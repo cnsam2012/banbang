@@ -1,0 +1,52 @@
+@startuml
+participant 用户访问
+用户访问 -> LoginFilter : doFilter
+activate LoginFilter
+LoginFilter -> CookieUtil : 从请求头/cookie中获取用户token
+activate CookieUtil
+CookieUtil --> LoginFilter
+deactivate CookieUtil
+LoginFilter -> BbUtil : setContext
+activate BbUtil
+BbUtil -> UserService : findLoginTicket
+activate UserService
+UserService -> RedisKeyUtil : getTicketKey
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+UserService --> BbUtil
+deactivate UserService
+BbUtil -> UserService : findUserById
+activate UserService
+UserService -> UserService : 从Redis中读取缓存
+activate UserService
+UserService -> RedisKeyUtil : 获取用户信息
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+UserService --> UserService
+deactivate UserService
+UserService -> UserService : initCache（若无缓存即存入缓存）
+activate UserService
+UserService -> UserMapper : selectById（从Mysql中取出用户信息）
+activate UserMapper
+UserMapper --> UserService
+deactivate UserMapper
+UserService -> RedisKeyUtil : 存入Redis
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+UserService --> UserService
+deactivate UserService
+UserService --> BbUtil
+deactivate UserService
+
+BbUtil -> UserService : 读取用户权限（限制用户访问接口）
+activate UserService
+UserService --> BbUtil
+deactivate UserService
+
+BbUtil --> LoginFilter
+deactivate BbUtil
+return
+@enduml

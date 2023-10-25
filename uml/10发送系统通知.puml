@@ -1,0 +1,14 @@
+@startuml
+participant 发送系统通知
+发送系统通知 -> EventConsumer : 事件触发（关注、评论、点赞）
+activate EventConsumer
+EventConsumer -> BbSystemUser : 获取系统用户信息
+activate BbSystemUser
+BbSystemUser --> EventConsumer
+deactivate BbSystemUser
+EventConsumer -> MessageService : 使用系统用户，添加信息
+activate MessageService
+MessageService --> EventConsumer
+deactivate MessageService
+return
+@enduml

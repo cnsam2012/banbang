@@ -1,0 +1,23 @@
+@startuml
+
+participant 用户登录
+用户登录 -> UserService : login
+activate UserService
+UserService -> UserMapper : 验证是否已注册
+activate UserMapper
+UserMapper --> UserService
+deactivate UserMapper
+
+create LoginTicket
+UserService -> LoginTicket : new
+activate LoginTicket
+LoginTicket --> UserService : 返回一段字符串，作为用户token
+deactivate LoginTicket
+
+UserService -> RedisKeyUtil : 将用户token存入redis
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+
+return
+@enduml

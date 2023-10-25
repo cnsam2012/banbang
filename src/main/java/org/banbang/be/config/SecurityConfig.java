@@ -103,11 +103,11 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 )
 
                 .antMatchers(
-                        "/discuss/top",
-                        "/discuss/wonderful",
-
-                        "/api/discuss/top",
-                        "/api/discuss/wonderful",
+//                        "/discuss/top",
+//                        "/discuss/wonderful",
+//
+//                        "/api/discuss/top",
+//                        "/api/discuss/wonderful",
 
                         "/discuss/delete",
                         "/discuss/delete/",

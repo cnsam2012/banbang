@@ -1,0 +1,34 @@
+@startuml
+participant 添加帖子
+添加帖子 -> DiscussPostApiController : 新帖子
+activate DiscussPostApiController
+DiscussPostApiController -> DiscussPostService : 新帖子
+activate DiscussPostService
+DiscussPostService -> SensitiveFilter : 检查标题
+activate SensitiveFilter
+SensitiveFilter -> SensitiveFilter : 是否存在敏感词
+activate SensitiveFilter
+SensitiveFilter --> SensitiveFilter : 过滤敏感词
+deactivate SensitiveFilter
+SensitiveFilter --> DiscussPostService
+deactivate SensitiveFilter
+DiscussPostService -> SensitiveFilter : 检查内容
+activate SensitiveFilter
+SensitiveFilter -> SensitiveFilter : 是否存在敏感词
+activate SensitiveFilter
+SensitiveFilter --> SensitiveFilter : 过滤敏感词
+deactivate SensitiveFilter
+SensitiveFilter --> DiscussPostService
+deactivate SensitiveFilter
+DiscussPostService -> DiscussPostMapper : 新帖子插入数据库
+activate DiscussPostMapper
+DiscussPostMapper --> DiscussPostService
+deactivate DiscussPostMapper
+DiscussPostService --> DiscussPostApiController
+deactivate DiscussPostService
+DiscussPostApiController -> EventProducer : 提交Kafka事件，（自动消费并）用于插入Elasticsearch搜索引擎
+activate EventProducer
+EventProducer --> DiscussPostApiController
+deactivate EventProducer
+return
+@enduml

@@ -1,0 +1,10 @@
+@startuml
+participant 显示系统通知
+显示系统通知 -> MessageApiController : 获取系统通知
+activate MessageApiController
+MessageApiController -> MessageService : 返回未读通知数量、列表
+activate MessageService
+MessageService --> MessageApiController
+deactivate MessageService
+return
+@enduml

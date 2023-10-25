@@ -1,0 +1,14 @@
+@startuml
+participant 置顶
+置顶 -> DiscussPostApiController : 置顶信息
+activate DiscussPostApiController
+DiscussPostApiController -> DiscussPostService : 更新置顶状态
+activate DiscussPostService
+DiscussPostService --> DiscussPostApiController
+deactivate DiscussPostService
+DiscussPostApiController -> EventProducer : 提交Kafka事件，（自动消费并）计算被置顶帖子的分数
+activate EventProducer
+EventProducer --> DiscussPostApiController
+deactivate EventProducer
+return
+@enduml

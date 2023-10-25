@@ -1,0 +1,10 @@
+@startuml
+participant 用户退出
+用户退出 -> UserService : logout
+activate UserService
+UserService -> RedisKeyUtil : 将用户token设置为无效token
+activate RedisKeyUtil
+RedisKeyUtil --> UserService
+deactivate RedisKeyUtil
+return
+@enduml

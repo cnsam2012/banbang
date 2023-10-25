@@ -39,7 +39,7 @@ public class IndexController {
 
     @GetMapping("/")
     public String root() {
-        return "forward:index";
+        return "forward:/index";
     }
 
     /**

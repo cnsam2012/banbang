@@ -239,7 +239,7 @@ public class LoginController {
             cookie.setPath(contextPath); // cookie 有效范围
             cookie.setMaxAge(expiredSeconds);
             response.addCookie(cookie);
-            return "redirect:index";
+            return "redirect:/index";
         } else {
             model.addAttribute("usernameMsg", map.get("usernameMsg"));
             model.addAttribute("passwordMsg", map.get("passwordMsg"));
@@ -258,7 +258,7 @@ public class LoginController {
     public String logout(@CookieValue("ticket") String ticket) {
         userService.logout(ticket);
         SecurityContextHolder.clearContext();
-        return "redirect:login";
+        return "redirect:/login";
     }
 
     /**

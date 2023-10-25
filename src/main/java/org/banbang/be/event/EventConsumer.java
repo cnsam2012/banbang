@@ -67,6 +67,7 @@ public class EventConsumer implements IBbKafkaTopicConst {
                 content.put(entry.getKey(), entry.getValue());
             }
         }
+
         message.setContent(JSONObject.toJSONString(content));
 
         messageService.addMessage(message);

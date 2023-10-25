@@ -389,6 +389,7 @@ public class UserService {
                 }
             }
         });
+        log.info("取得用户权限 -- {}", user.getType());
         return list;
     }
 

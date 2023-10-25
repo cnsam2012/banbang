@@ -112,7 +112,7 @@ public class BbUtil {
             // 检查凭证状态（是否有效）以及是否过期
             if (loginTicket != null && loginTicket.getStatus() == 0 && loginTicket.getExpired().after(new Date())) {
                 // 根据凭证查询用户
-                User user = userService.findUserById(loginTicket.getUserId());
+                User user = userService.findUserByIdReturnPwd(loginTicket.getUserId());
                 // 在本次请求中持有用户信息
                 hostHolder.setUser(user);
                 // 构建用户认证的结果，并存入 SecurityContext, 以便于 Spring Security 进行授权
