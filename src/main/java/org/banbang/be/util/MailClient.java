@@ -19,12 +19,16 @@ public class MailClient {
 
     private static final Logger logger = LoggerFactory.getLogger(MailClient.class);
 
-    @Autowired
-    private JavaMailSender mailSender;
+    private final JavaMailSender mailSender;
 
     // 邮件发送方
     @Value("${spring.mail.username}")
     private String from;
+
+    @Autowired
+    public MailClient(JavaMailSender mailSender) {
+        this.mailSender = mailSender;
+    }
 
     /**
      * 发送邮件
